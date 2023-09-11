@@ -1,15 +1,16 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 export default function Page() {
   return (
     <View style={styles.container}>
-      <Pressable style={styles.main}>
+      <Link href="/workouts" style={styles.main}>
         <Text style={styles.title}>
           Pick
           <AntDesign name="caretright" size={44} color="green" /> workout
         </Text>
-      </Pressable>
+      </Link>
     </View>
   );
 }
