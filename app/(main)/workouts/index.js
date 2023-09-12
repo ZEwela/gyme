@@ -8,7 +8,14 @@ const Workouts = () => {
   return (
     <FlatList
       data={workouts}
-      renderItem={({ item }) => <Item title={item.name} />}
+      renderItem={({ item }) => (
+        <Item
+          // onPress={() => }
+          title={item.name}
+          pathname={`/workouts/${item.name}`}
+          params={{ workout: item.name }}
+        />
+      )}
       keyExtractor={(item) => item.name}
     />
   );

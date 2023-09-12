@@ -12,30 +12,19 @@ export default function MainLayout() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
       }}
     >
-      <Stack.Screen
+      {/* <Stack.Screen
         name="index"
         options={{ headerTitle: "Choose workout" }}
-      ></Stack.Screen>
+      ></Stack.Screen> */}
       <Stack.Screen
-        name="[workout]"
+        name="[exercise]"
         options={({ route }) => ({
-          headerTitle: route.params.workout.toUpperCase(),
+          headerTitle: route.params.exercise.toUpperCase(),
         })}
-      ></Stack.Screen>
-      <Stack.Screen
-        name="modal"
-        options={{
-          // Set the presentation mode to modal for our modal route.
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name="exercises"
-        options={{
-          headerShown: false,
-        }}
       ></Stack.Screen>
     </Stack>
   );

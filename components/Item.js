@@ -1,13 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
-const Item = ({ title }) => {
+const Item = ({ title, pathname, params }) => {
   return (
-    <Link
-      style={styles.item}
-      href={{ pathname: `/workouts/${title}`, params: { workout: title } }}
-    >
+    <Link style={styles.item} href={{ pathname: pathname, params: { params } }}>
       <Text style={styles.text}>{title.toUpperCase()}</Text>
     </Link>
   );
