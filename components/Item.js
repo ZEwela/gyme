@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 
 const Item = ({ title, pathname, params }) => {
   return (
-    <Link style={styles.item} href={{ pathname: pathname, params: { params } }}>
+    <Link style={styles.item} href={{ pathname: pathname, params: params }}>
       <Text style={styles.text}>{title.toUpperCase()}</Text>
     </Link>
   );

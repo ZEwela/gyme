@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "expo-router";
 import { Feather, AntDesign, Ionicons } from "@expo/vector-icons";
 
@@ -8,13 +8,15 @@ const FriendItem = ({
   pathname,
   params,
   userId,
-  addFriendToWorkout,
+  toggleFriendToWorkout,
+  isInMembers,
 }) => {
-  const [pressed, setPressed] = useState(false);
+  const [pressed, setPressed] = useState(isInMembers(userId));
   const handleAddingFriendToWorkout = () => {
     setPressed(!pressed);
-    addFriendToWorkout(userId);
+    toggleFriendToWorkout(userId);
   };
+
   return (
     <View style={styles.item}>
       <Text style={styles.text}>{title}</Text>
@@ -23,8 +25,8 @@ const FriendItem = ({
           {/* TO CHANGE: is will be avatar */}
           <Feather name="user" size={30} color="black" />
         </Link>
-        <Pressable onPress={handleAddingFriendToWorkout}>
-          {pressed ? (
+        <Pressable onPress={() => handleAddingFriendToWorkout()}>
+          {pressed || isInMembers(userId) ? (
             <AntDesign name="checkcircle" size={30} color="green" />
           ) : (
             <Ionicons name="md-add-circle-outline" size={30} color="black" />

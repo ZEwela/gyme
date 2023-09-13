@@ -112,6 +112,7 @@ export const users = [
   {
     id: 0,
     name: "Ewelina",
+    avatar: "",
     friends: [1, 2],
     workouts: [],
     exercies: [],
@@ -127,6 +128,8 @@ export const users = [
               { set: 1, reps: 12, weight: 20 },
               { set: 2, reps: 12, weight: 20 },
               { set: 3, reps: 12, weight: 22 },
+              { set: 4, reps: 12, weight: 22 },
+              { set: 5, reps: 12, weight: 22 },
             ],
           },
           {
@@ -207,6 +210,7 @@ export const users = [
     name: "Karol",
     friends: [0],
     workouts: [],
+    avatar: "",
     exercies: [],
     workoutsHistory: [
       {

@@ -1,4 +1,6 @@
 import { Stack } from "expo-router";
+import { Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function MainLayout() {
   return (
@@ -22,13 +24,18 @@ export default function MainLayout() {
         name="[workout]"
         options={({ route }) => ({
           headerTitle: route.params.workout.toUpperCase(),
+          headerRight: () => (
+            <Pressable>
+              <Ionicons name="person-add-outline" size={30} color="black" />
+            </Pressable>
+          ),
         })}
       ></Stack.Screen>
       <Stack.Screen
-        name="modal"
+        name="addOtherToWorkout"
         options={{
-          // Set the presentation mode to modal for our modal route.
           presentation: "modal",
+          headerShown: false,
         }}
       />
       <Stack.Screen
