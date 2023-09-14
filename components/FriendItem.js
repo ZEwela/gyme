@@ -26,7 +26,7 @@ const FriendItem = ({
           <Feather name="user" size={30} color="black" />
         </Link>
         <Pressable onPress={() => handleAddingFriendToWorkout()}>
-          {pressed || isInMembers(userId) ? (
+          {pressed ? (
             <AntDesign name="checkcircle" size={30} color="green" />
           ) : (
             <Ionicons name="md-add-circle-outline" size={30} color="black" />

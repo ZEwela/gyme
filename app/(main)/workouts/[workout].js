@@ -37,7 +37,7 @@ const Workout = () => {
       {show && (
         <AddOthersToWorkout
           setShow={setShow}
-          friendsIds={friends}
+          membersIds={friends}
           workout={workout}
           setWorkoutMembers={setWorkoutMembers}
           workoutMembers={workoutMembers}

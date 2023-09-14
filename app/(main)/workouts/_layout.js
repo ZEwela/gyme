@@ -32,7 +32,7 @@ export default function MainLayout() {
         })}
       ></Stack.Screen>
       <Stack.Screen
-        name="addOtherToWorkout"
+        name="addOthersToWorkout"
         options={{
           presentation: "modal",
           headerShown: false,

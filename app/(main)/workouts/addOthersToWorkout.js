@@ -6,7 +6,7 @@ import {
   FlatList,
   Modal,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { users } from "../../../data";
 import FriendItem from "../../../components/FriendItem";
@@ -14,85 +14,76 @@ import FriendItem from "../../../components/FriendItem";
 const AddOthersToWorkout = ({
   show,
   setShow,
-  friendsIds,
+  membersIds,
   workout,
   setWorkoutMembers,
   workoutMembers,
 }) => {
-  const [friendsData, setFriendsData] = useState([]);
+  const [membersData, setMembersData] = useState([]);
 
-  const [newMembers, setNewMembers] = useState([...workoutMembers]);
-  const [isActive, setIsActive] = useState(false);
-  const [added, setAdded] = useState(false);
+  const [members, setMembers] = useState([...workoutMembers]);
 
   useEffect(() => {
-    if (friendsIds.length) {
-      const fetchFriendsData = [];
-      friendsIds.forEach((friend) =>
-        fetchFriendsData.push(users.find(({ id }) => id === friend))
+    if (membersIds.length) {
+      const _membersData = [];
+      membersIds.forEach((memberId) =>
+        _membersData.push(users.find(({ id }) => id === memberId))
       );
-      setFriendsData(fetchFriendsData);
+      setMembersData(_membersData);
     }
-  }, [friendsIds]);
+  }, [membersIds]);
 
-  const toggleFriendToWorkout = (friendId) => {
-    const isInMewMembers = newMembers[friendId];
-    let updatedNewMembers;
-    if (isInMewMembers) {
-      const prepareNewMembers = newMembers.filter(
-        (member) => member !== friendId
-      );
-      updatedNewMembers = [...prepareNewMembers];
-    } else {
-      updatedNewMembers = [...newMembers, friendId];
-    }
+  const toggleMember = (memberId) => {
+    const _members = toggleState(members, memberId);
 
-    setNewMembers(updatedNewMembers);
-    // TO DO: how to create workout for you, and other users
+    setMembers(_members);
+
+    // TO DO: how to create workout for you, and other users and what to do with adding and removing members during workout
+  };
+
+  //
+  const toggleState = (state, id) => {
+    const _stateSet = new Set(state, id);
+    _stateSet.has(id) ? _stateSet.delete(id) : _stateSet.add(id);
+    return Array.from(_stateSet);
   };
 
   const handleClosing = () => {
-    setWorkoutMembers([...newMembers]);
+    setWorkoutMembers([...members]);
     setShow(false);
   };
+
   const isInMembers = (id) => {
-    return newMembers[id];
+    return members[id];
   };
 
   return (
     <>
       <Modal animationType="fade" transparent={true} visible={show}>
         <View style={styles.container}>
-          <Text>{newMembers.length}</Text>
+          <Text>{members.length}</Text>
           <View style={styles.header}>
             <Pressable onPress={handleClosing}>
-              {newMembers.length > 1 ? (
-                <View style={styles.headerAddClose}>
-                  <AntDesign name="closecircleo" size={24} color="black" />
-                  <Text style={styles.button}>Add</Text>
-                </View>
-              ) : (
-                <View style={styles.headerClose}>
-                  <AntDesign name="closecircleo" size={24} color="black" />
-                </View>
-              )}
+              <View style={styles.headerClose}>
+                <AntDesign name="closecircleo" size={24} color="black" />
+              </View>
             </Pressable>
           </View>
           <View styles={styles.body}>
-            {friendsData?.length ? (
+            {membersData.length ? (
               <FlatList
-                data={friendsData}
+                data={membersData}
                 renderItem={({ item }) => (
                   <FriendItem
                     title={item.name}
                     userId={item.id}
                     pathname={`/users/${item.name}`}
                     params={{ user: item.id }}
-                    toggleFriendToWorkout={toggleFriendToWorkout}
+                    toggleFriendToWorkout={toggleMember}
                     isInMembers={isInMembers}
                   />
                 )}
-                keyExtractor={(item) => item.id}
+                // keyExtractor={(item) => item.id}
               />
             ) : null}
           </View>
@@ -127,11 +118,5 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-  },
-  headerAddClose: {
-    flexDirection: "row",
-    margin: 15,
-    justifyContent: "space-between",
-    alignItems: "center",
   },
 });
