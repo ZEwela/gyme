@@ -2,17 +2,36 @@ import { View, Text, StyleSheet, Button, Pressable } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 
-const AddMoreBoxFooter = ({ sets, setSets }) => {
+const AddSet = ({ sets, setSets }) => {
+  const handleAddingSet = () => {
+    let newSet;
+
+    if (sets?.length) {
+      newSet = {
+        reps: sets[sets.length - 1].reps,
+        set: sets[sets.length - 1].set,
+        weight: sets[sets.length - 1].weight,
+      };
+    } else {
+      newSet = { reps: 0, set: 0, weight: 0 };
+    }
+
+    newSet.set += 1;
+    const newSets = [...sets, newSet];
+
+    setSets(newSets);
+  };
+
   return (
     <View style={styles.item}>
-      <Pressable onPress={() => console.log("not yet")}>
+      <Pressable onPress={handleAddingSet}>
         <Ionicons name="md-add" size={40} color="black" />
       </Pressable>
     </View>
   );
 };
 
-export default AddMoreBoxFooter;
+export default AddSet;
 
 const styles = StyleSheet.create({
   item: {

@@ -6,7 +6,7 @@ import {
   FlatList,
   Modal,
 } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { users } from "../../../data";
 import FriendItem from "../../../components/FriendItem";

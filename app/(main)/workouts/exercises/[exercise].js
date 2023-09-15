@@ -1,10 +1,9 @@
-import { View, Text, Button } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
-import { router } from "expo-router";
 import { users } from "../../../../data";
 import { FlatList } from "react-native-gesture-handler";
-import ExerciseItem from "../../../../components/ExerciseItem";
+import ExerciseCard from "../../../../components/ExerciseCard";
 
 const Exercise = () => {
   const params = useLocalSearchParams();
@@ -20,28 +19,26 @@ const Exercise = () => {
     const lastWorkout = workouts.find(
       ({ workoutName }) => workoutName === workout
     );
-    if (lastExercise) {
+    if (lastWorkout) {
       const lastExercise = lastWorkout.exercies.find(
         ({ name }) => name === exercise
       );
       return lastExercise.data;
     }
-    return null;
+    return [];
   };
 
-  console.log(members);
   return (
     <View>
       <FlatList
         data={members}
         renderItem={({ item }) => (
-          <ExerciseItem
+          <ExerciseCard
             name={item.name}
             info={lastExercise(item.workoutsHistory)}
           />
         )}
       />
-      <Text>Exercise,{exercise}</Text>
     </View>
   );
 };
