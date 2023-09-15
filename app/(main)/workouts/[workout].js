@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Pressable } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import Item from "../../../components/Item";
 import { users, workouts } from "../../../data";
@@ -8,7 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 const Workout = () => {
   // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
-  const user = users.find(({ id }) => id === 0);
+
+  const user = users.find(({ id }) => id === 2);
 
   const { workout } = useLocalSearchParams();
   const exercises = workouts.find(({ name }) => name === workout).exercises;

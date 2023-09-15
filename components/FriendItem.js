@@ -4,6 +4,7 @@ import { Link } from "expo-router";
 import { Feather, AntDesign, Ionicons } from "@expo/vector-icons";
 
 const FriendItem = ({
+  item,
   title,
   pathname,
   params,
@@ -12,6 +13,7 @@ const FriendItem = ({
   isInMembers,
 }) => {
   const [pressed, setPressed] = useState(isInMembers(userId));
+
   const handleAddingFriendToWorkout = () => {
     setPressed(!pressed);
     toggleFriendToWorkout(userId);
@@ -25,7 +27,10 @@ const FriendItem = ({
           {/* TO CHANGE: is will be avatar */}
           <Feather name="user" size={30} color="black" />
         </Link>
-        <Pressable onPress={() => handleAddingFriendToWorkout()}>
+        <Pressable
+          testID={`member-${userId}`}
+          onPress={() => handleAddingFriendToWorkout()}
+        >
           {pressed ? (
             <AntDesign name="checkcircle" size={30} color="green" />
           ) : (

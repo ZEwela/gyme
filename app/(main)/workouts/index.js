@@ -10,9 +10,8 @@ const Workouts = () => {
       data={workouts}
       renderItem={({ item }) => (
         <Item
-          // onPress={() => }
           title={item.name}
-          pathname={`/workouts/${item.name}`}
+          pathname={`workouts/${item.name}`}
           params={{ workout: item.name }}
         />
       )}

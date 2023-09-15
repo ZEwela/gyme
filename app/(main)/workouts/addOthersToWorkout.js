@@ -26,9 +26,12 @@ const AddOthersToWorkout = ({
   useEffect(() => {
     if (membersIds.length) {
       const _membersData = [];
-      membersIds.forEach((memberId) =>
-        _membersData.push(users.find(({ id }) => id === memberId))
-      );
+      membersIds.forEach((memberId) => {
+        const memberData = users.find(({ id }) => id === memberId);
+        if (memberData) {
+          _membersData.push(memberData);
+        }
+      });
       setMembersData(_membersData);
     }
   }, [membersIds]);
@@ -54,7 +57,7 @@ const AddOthersToWorkout = ({
   };
 
   const isInMembers = (id) => {
-    return members[id];
+    return members.includes(id);
   };
 
   return (
@@ -63,7 +66,7 @@ const AddOthersToWorkout = ({
         <View style={styles.container}>
           <Text>{members.length}</Text>
           <View style={styles.header}>
-            <Pressable onPress={handleClosing}>
+            <Pressable testID={"close-button"} onPress={handleClosing}>
               <View style={styles.headerClose}>
                 <AntDesign name="closecircleo" size={24} color="black" />
               </View>
@@ -75,15 +78,16 @@ const AddOthersToWorkout = ({
                 data={membersData}
                 renderItem={({ item }) => (
                   <FriendItem
-                    title={item.name}
-                    userId={item.id}
-                    pathname={`/users/${item.name}`}
-                    params={{ user: item.id }}
+                    testID={`member-${item?.id}`}
+                    item={item}
+                    title={item?.name}
+                    userId={item?.id}
+                    pathname={`/users/${item?.name}`}
+                    params={{ user: item?.id }}
                     toggleFriendToWorkout={toggleMember}
                     isInMembers={isInMembers}
                   />
                 )}
-                // keyExtractor={(item) => item.id}
               />
             ) : null}
           </View>
