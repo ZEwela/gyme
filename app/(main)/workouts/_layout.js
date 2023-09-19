@@ -1,8 +1,6 @@
 import { Stack } from "expo-router";
-import { Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-export default function MainLayout() {
+export default function WorkoutsLayout() {
   return (
     <Stack
       screenOptions={{
@@ -16,21 +14,8 @@ export default function MainLayout() {
         },
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{ headerTitle: "Choose workout" }}
-      ></Stack.Screen>
-      <Stack.Screen
-        name="[workout]"
-        options={({ route }) => ({
-          headerTitle: route.params.workout.toUpperCase(),
-          headerRight: () => (
-            <Pressable>
-              <Ionicons name="person-add-outline" size={30} color="black" />
-            </Pressable>
-          ),
-        })}
-      ></Stack.Screen>
+      <Stack.Screen name="index" options={{ headerTitle: "Choose workout" }} />
+
       <Stack.Screen
         name="addOthersToWorkout"
         options={{
@@ -38,12 +23,25 @@ export default function MainLayout() {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
-        name="exercises"
-        options={{
-          headerShown: false,
-        }}
-      ></Stack.Screen>
+        name="createWorkout"
+        options={{ headerTitle: "Create workout" }}
+      />
+
+      <Stack.Screen
+        name="[workout]"
+        options={({ route }) => ({
+          headerTitle: route.params.workout.toUpperCase(),
+        })}
+      />
+
+      <Stack.Screen
+        name="exercises/[exercise]"
+        options={({ route }) => ({
+          headerTitle: route.params.exercise.toUpperCase(),
+        })}
+      />
     </Stack>
   );
 }

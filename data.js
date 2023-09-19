@@ -1,4 +1,26 @@
 import moment from "moment";
+export const exercises = [
+  {
+    name: "Kettle Single Alternating Lunges",
+    ref: "https://www.youtube.com/watch?v=3LdgCetmeFg",
+  },
+  {
+    name: "Db Signle Leg RDL’s",
+    ref: "https://www.youtube.com/watch?v=lI8-igvsnVQ",
+  },
+  {
+    name: "Single Lunge",
+    ref: "https://www.youtube.com/watch?v=1nErJljteqw",
+  },
+  {
+    name: "Squat",
+    ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
+  },
+  {
+    name: "New Squat",
+    ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
+  },
+];
 
 export const workouts = [
   {
@@ -313,13 +335,13 @@ export const currentWorkout = [
   {
     user: 0,
     date: moment().format("L"),
-    workoutName: "",
+    workoutName: "Legs",
     exercises: [],
   },
   {
     user: 1,
     date: moment().format("L"),
-    workoutName: "",
+    workoutName: "Legs",
     exercises: [],
   },
 ];

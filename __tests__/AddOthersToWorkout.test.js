@@ -21,8 +21,6 @@ describe("AddOthersToWorkout Component", () => {
 
     const memberItem = getByTestId("member-1"); // Replace 1 with an actual user ID
     fireEvent.press(memberItem); // Simulate pressing the member item
-
-    // You can add assertions here to check if the state is updated correctly
   });
 
   it("closes the modal on pressing close button", () => {

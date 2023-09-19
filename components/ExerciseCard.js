@@ -5,6 +5,7 @@ import SetItem from "./SetItem";
 import AddSet from "./AddSet";
 
 const ExerciseCard = ({ name, info }) => {
+
   const [sets, setSets] = useState([...info] || []);
 
   const removeSet = (setId) => {

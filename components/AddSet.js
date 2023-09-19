@@ -17,9 +17,9 @@ const AddSet = ({ sets, setSets }) => {
     }
 
     newSet.set += 1;
-    const newSets = [...sets, newSet];
+    const updatedSets = [...sets, newSet];
 
-    setSets(newSets);
+    setSets(updatedSets);
   };
 
   return (

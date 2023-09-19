@@ -12,18 +12,22 @@ export default function MainLayout() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        gestureEnabled: true,
-        gestureDirection: "horizontal",
       }}
     >
-      {/* <Stack.Screen
-        name="index"
-        options={{ headerTitle: "Choose workout" }}
-      ></Stack.Screen> */}
       <Stack.Screen
-        name="[exercise]"
+        name="index"
+        options={{ headerTitle: "Exercises" }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="createExercise"
+        options={{ headerTitle: "Create exercise" }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="[exerciseName]"
         options={({ route }) => ({
-          headerTitle: route.params.exercise.toUpperCase(),
+          headerTitle: route.params.exerciseName.toUpperCase(),
         })}
       ></Stack.Screen>
     </Stack>

@@ -1,10 +1,10 @@
 import { View, Text, FlatList, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import Item from "../../../components/Item";
 import { users, workouts } from "../../../data";
 import AddOthersToWorkout from "./addOthersToWorkout";
 import { Ionicons } from "@expo/vector-icons";
+import Item from "../../../components/Item";
 
 const Workout = () => {
   // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
@@ -28,6 +28,7 @@ const Workout = () => {
     <>
       <Stack.Screen
         options={{
+          headerTitle: `${workout.toUpperCase()}`,
           headerRight: () => (
             <Pressable onPress={() => setShow(true)}>
               <Ionicons name="person-add-outline" size={30} color="white" />
@@ -51,7 +52,7 @@ const Workout = () => {
         renderItem={({ item }) => (
           <Item
             title={item.name}
-            pathname={`/workouts/exercises/${item.name}`}
+            pathname={`workouts/exercises/${item.name}`}
             params={{
               exercise: item.name,
               // with state it should be deal diffrently
@@ -60,6 +61,13 @@ const Workout = () => {
             }}
           />
         )}
+        ListFooterComponent={
+          <Item
+            pathname={"(main)/exercises"}
+            title={"Add exercise"}
+            params={{ workoutId: workout }}
+          />
+        }
         keyExtractor={(item) => item.name}
       />
     </>

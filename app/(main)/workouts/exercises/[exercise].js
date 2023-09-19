@@ -7,10 +7,11 @@ import ExerciseCard from "../../../../components/ExerciseCard";
 
 const Exercise = () => {
   const params = useLocalSearchParams();
+  console.log(params);
 
   const { exercise, workoutMembers, workout } = params;
   // TODO: change when you will have store
-  const workoutMembersToArray = workoutMembers.split(",");
+  const workoutMembersToArray = workoutMembers?.split(",") || [];
 
   const members = users.filter((user) =>
     workoutMembersToArray.includes(user.id.toString())

@@ -4,18 +4,20 @@ import { Link } from "expo-router";
 
 const Item = ({ title, pathname, params }) => {
   return (
-    <Link style={styles.item} href={{ pathname: pathname, params: params }}>
-      <Text style={styles.text}>{title.toUpperCase()}</Text>
-    </Link>
+    <View style={styles.itemContainer}>
+      <Link style={styles.item} href={{ pathname: pathname, params: params }}>
+        <Text style={styles.text}>{title.toUpperCase()}</Text>
+      </Link>
+    </View>
   );
 };
 
 export default Item;
 
 const styles = StyleSheet.create({
-  item: {
-    alignItems: "center",
+  itemContainer: {
     padding: 24,
+    alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#BACBA9",
     marginVertical: 5,
