@@ -5,14 +5,13 @@ import SetItem from "./SetItem";
 import AddSet from "./AddSet";
 
 const ExerciseCard = ({ name, info }) => {
-
   const [sets, setSets] = useState([...info] || []);
 
   const removeSet = (setId) => {
     const updatedSets = sets.filter((set) => set.set !== setId);
     setSets([...updatedSets]);
   };
-  const updateSet = (setId, newWeight, newReps) => {
+  const updateSet = (setId, newWeight, newReps, newHold) => {
     const updatedSets = sets.map((set) => {
       if (set.set === setId) {
         return {
@@ -38,6 +37,7 @@ const ExerciseCard = ({ name, info }) => {
             previousReps={item.reps}
             previousWeight={item.weight}
             previousSet={item.set}
+            previousHold={item.hold}
             removeSet={removeSet}
             updateSet={updateSet}
           />

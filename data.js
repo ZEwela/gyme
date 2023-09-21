@@ -20,6 +20,10 @@ export const exercises = [
     name: "New Squat",
     ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
   },
+  {
+    name: "Hanging",
+    ref: null,
+  },
 ];
 
 export const workouts = [
@@ -102,8 +106,8 @@ export const workouts = [
         ref: "https://www.youtube.com/watch?v=1nErJljteqw",
       },
       {
-        name: "Squat",
-        ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
+        name: "Hanging",
+        ref: null,
       },
     ],
   },
@@ -215,12 +219,12 @@ export const users = [
             ],
           },
           {
-            name: "Squat",
-            ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
+            name: "Hanging",
+            ref: null,
             data: [
-              { set: 1, reps: 12, weight: 40 },
-              { set: 2, reps: 12, weight: 40 },
-              { set: 3, reps: 12, weight: 22 },
+              { set: 1, reps: 1, weight: 0, hold: 30 },
+              { set: 2, reps: 1, weight: 0, hold: 20 },
+              { set: 3, reps: 1, weight: 0, hold: 30 },
             ],
           },
         ],
@@ -309,12 +313,12 @@ export const users = [
             ],
           },
           {
-            name: "Squat",
-            ref: "https://www.youtube.com/watch?v=gcNh17Ckjgg",
+            name: "Hanging",
+            ref: null,
             data: [
-              { set: 1, reps: 12, weight: 70 },
-              { set: 2, reps: 12, weight: 70 },
-              { set: 3, reps: 12, weight: 70 },
+              { set: 1, reps: 1, weight: 0, hold: 40 },
+              { set: 2, reps: 1, weight: 0, hold: 40 },
+              { set: 3, reps: 1, weight: 0, hold: 40 },
             ],
           },
         ],

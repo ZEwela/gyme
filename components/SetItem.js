@@ -1,11 +1,17 @@
-import { Text, StyleSheet, Pressable, Modal } from "react-native";
+import { Text, StyleSheet, Pressable, Modal, View } from "react-native";
 import React, { useState } from "react";
 import SetItemDetails from "./SetItemDetails";
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome,
+} from "@expo/vector-icons";
 
 const SetItem = ({
   previousSet,
   previousReps,
   previousWeight,
+  previousHold,
   removeSet,
   updateSet,
 }) => {
@@ -13,6 +19,7 @@ const SetItem = ({
   const [weight, setWeight] = useState(previousWeight || 0);
   const [reps, setReps] = useState(previousReps || 0);
   const [set, setSet] = useState(previousSet);
+  const [hold, setHold] = useState(previousHold || 0);
 
   const onClose = () => {
     updateSet(set, weight, reps);
@@ -41,12 +48,24 @@ const SetItem = ({
           set={set}
           onDelete={onDelete}
           setIsVisible={setIsVisible}
+          hold={hold}
+          setHold={setHold}
         />
       </Modal>
 
       <Pressable style={styles.item} onPress={() => setIsVisible(!isVisible)}>
-        <Text style={styles.text}>{weight} x</Text>
-        <Text style={styles.text}>{reps}</Text>
+        <View style={styles.row}>
+          <FontAwesome name="repeat" size={15} color="gray" />
+          <Text style={styles.text}>{reps}</Text>
+        </View>
+        <View style={styles.row}>
+          <MaterialCommunityIcons name="weight" size={15} color="gray" />
+          <Text style={styles.text}>{weight}</Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name="ios-time-sharp" size={15} color="gray" />
+          <Text style={styles.text}>{hold}</Text>
+        </View>
       </Pressable>
     </>
   );
@@ -70,5 +89,11 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "bold",
     fontSize: 20,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 5,
   },
 });

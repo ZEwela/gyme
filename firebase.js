@@ -1,8 +1,12 @@
 import { initializeApp } from "firebase/app";
 
+import { getDatabase, ref, onValue } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyB0BuzrSQCRdfbZpqM64onnMZe0v59e-RQ",
   authDomain: "gyme-38c52.firebaseapp.com",
+  databaseURL:
+    "https://gyme-38c52-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "gyme-38c52",
   storageBucket: "gyme-38c52.appspot.com",
   messagingSenderId: "954315959322",
@@ -10,3 +14,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+
+export { ref, onValue, db };
