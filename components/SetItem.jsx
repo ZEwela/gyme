@@ -12,6 +12,7 @@ const SetItem = ({
   previousReps,
   previousWeight,
   previousHold,
+  previousNote,
   removeSet,
   updateSet,
 }) => {
@@ -20,9 +21,10 @@ const SetItem = ({
   const [reps, setReps] = useState(previousReps || 0);
   const [set, setSet] = useState(previousSet);
   const [hold, setHold] = useState(previousHold || 0);
+  const [note, setNote] = useState(previousNote || "");
 
   const onClose = () => {
-    updateSet(set, weight, reps);
+    updateSet(set, weight, reps, hold, note);
     setIsVisible(!isVisible);
   };
 
@@ -50,6 +52,8 @@ const SetItem = ({
           setIsVisible={setIsVisible}
           hold={hold}
           setHold={setHold}
+          note={note}
+          setNote={setNote}
         />
       </Modal>
 

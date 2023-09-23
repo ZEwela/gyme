@@ -3,17 +3,16 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB0BuzrSQCRdfbZpqM64onnMZe0v59e-RQ",
-  authDomain: "gyme-38c52.firebaseapp.com",
-  databaseURL:
-    "https://gyme-38c52-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "gyme-38c52",
-  storageBucket: "gyme-38c52.appspot.com",
-  messagingSenderId: "954315959322",
-  appId: "1:954315959322:web:4ef5c05865cbce8c6c35a3",
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  databaseURL: process.env.EXPO_PUBLIC_DATABASE_URL,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
-export { ref, onValue, db };
+export { db };

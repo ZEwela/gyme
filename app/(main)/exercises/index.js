@@ -1,11 +1,24 @@
 import { View, Text, FlatList } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Item from "../../../components/Item";
-import { exercises } from "../../../data";
 import { useLocalSearchParams } from "expo-router";
+import { ref, onValue } from "firebase/database";
+import { db } from "../../../firebase";
 
 const Exercises = () => {
   const { workoutId } = useLocalSearchParams();
+  const [exercises, setExercises] = useState([]);
+
+  useEffect(() => {
+    const exercisesRef = ref(db, "exercises");
+    onValue(exercisesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const dataInArray = Object.values(data);
+        setExercises([...dataInArray]);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -14,12 +27,12 @@ const Exercises = () => {
         data={exercises}
         renderItem={({ item }) => (
           <Item
-            title={item.name}
-            pathname={`exercises/${item.name}`}
+            title={item.exercise_name}
+            pathname={`exercises/${item.exercise_name}`}
             params={{ workoutId: workoutId }}
           />
         )}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.exercise_name}
       />
     </>
   );

@@ -12,3 +12,14 @@ web-build/
 
 # macOS
 .DS_Store
+
+documentation.txt
+
+firebasePlan/
+
+UserInput.jsx
+login.jsx
+signUp.jsx
+
+
+.env

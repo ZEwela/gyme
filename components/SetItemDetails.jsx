@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
 import Clock from "./Clock";
@@ -12,6 +19,8 @@ const SetItemDetails = ({
   set,
   setReps,
   setWeight,
+  note,
+  setNote,
   onClose,
   onDelete,
 }) => {
@@ -39,19 +48,17 @@ const SetItemDetails = ({
     <>
       {isClockVisible && (
         <Clock
-          setHold={setHold}
           setIsClockVisible={setIsClockVisible}
           isClockVisible={isClockVisible}
         />
       )}
       {isTimerVisible && (
         <TimerClock
-          setHold={setHold}
           setIsTimerVisible={setIsTimerVisible}
           isTimerVisible={isTimerVisible}
         />
       )}
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.headerClose}>
           <Pressable onPress={deleteSet}>
             <Text style={styles.text}>DELETE</Text>
@@ -63,8 +70,21 @@ const SetItemDetails = ({
 
         <View>
           <View style={styles.item}>
-            <Text style={styles.label}>Reps</Text>
+            <View style={styles.toolkit}>
+              <Text style={styles.label}>Tools</Text>
+              <View style={styles.body}>
+                <Pressable onPress={() => setIsClockVisible(true)}>
+                  <Feather name="clock" size={25} color="black" />
+                </Pressable>
 
+                <Pressable onPress={() => setIsTimerVisible(true)}>
+                  <MaterialIcons name="timer" size={30} color="black" />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.label}>Reps</Text>
             <View style={styles.body}>
               <Pressable onPress={() => decrement(reps, setReps)}>
                 <Ionicons
@@ -147,19 +167,21 @@ const SetItemDetails = ({
             </View>
           </View>
           <View style={styles.item}>
-            <Text style={styles.label}>Tools</Text>
-            <View style={styles.body}>
-              <Pressable onPress={() => setIsClockVisible(true)}>
-                <Feather name="clock" size={25} color="black" />
-              </Pressable>
+            <Text style={styles.label}>Notes</Text>
 
-              <Pressable onPress={() => setIsTimerVisible(true)}>
-                <MaterialIcons name="timer" size={30} color="black" />
-              </Pressable>
-            </View>
+            <TextInput
+              editable
+              style={styles.note}
+              value={note}
+              onChangeText={setNote}
+              placeholder="note"
+              multiline
+              numberOfLines={2}
+              maxLength={120}
+            />
           </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };
@@ -171,6 +193,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     backgroundColor: "#E1F4CB",
+    paddingBottom: 200,
   },
   headerClose: {
     flexDirection: "row",
@@ -179,7 +202,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   item: {
-    // alignItems: "center",
     padding: 20,
     backgroundColor: "#EBF8DD",
     marginVertical: 5,
@@ -189,7 +211,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
   },
-
+  note: {
+    fontSize: 20,
+    padding: 10,
+    backgroundColor: "#F5FCEE",
+  },
   label: {
     fontSize: 20,
     marginBottom: 10,
@@ -206,5 +232,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     gap: 10,
+  },
+  toolkit: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

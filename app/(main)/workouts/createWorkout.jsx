@@ -8,17 +8,16 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 const createWorkout = () => {
   const { exerciseId } = useLocalSearchParams();
   const [workoutName, setWorkoutName] = useState("");
-  const [note, setNote] = useState("");
-  const [exercies, setExercises] = useState([]);
+  const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
-    if (exerciseId) {
-      setExercises([...exercies, exerciseId]);
+    if (exerciseId && !exercises.includes(exerciseId)) {
+      setExercises([...exercises, exerciseId]);
     }
   }, [exerciseId]);
 
@@ -50,24 +49,15 @@ const createWorkout = () => {
           onChangeText={setWorkoutName}
         />
       </View>
-      {/* <View style={styles.container}>
-        <Text style={styles.text}>Note: </Text>
-        <TextInput
-          style={styles.input}
-          value={note}
-          placeholder="description"
-          onChangeText={setNote}
-        />
-      </View> */}
 
       <Item
         pathname={"(main)/exercises"}
         title={"Add Exercise"}
         params={{ workoutId: workoutName }}
       />
-      {exercies && (
+      {exercises && (
         <FlatList
-          data={exercies}
+          data={exercises}
           renderItem={({ item }) => (
             <Item title={item} pathname={`exercises/${item}`} />
           )}

@@ -146,13 +146,14 @@ export const users = [
       {
         date: moment().subtract(10, "days").calendar(),
         workoutName: "legs",
+        note: "okres",
         exercies: [
           {
             name: "Kettle Single Alternating Lunges",
             ref: "https://www.youtube.com/watch?v=3LdgCetmeFg",
             data: [
-              { set: 1, reps: 12, weight: 20 },
-              { set: 2, reps: 12, weight: 20 },
+              { set: 1, reps: 12, weight: 20, note: "na szarej bylo 25" },
+              { set: 2, reps: 12, weight: 20, note: "na szarej bylo 25" },
               { set: 3, reps: 12, weight: 22 },
               { set: 4, reps: 12, weight: 22 },
               { set: 5, reps: 12, weight: 22 },

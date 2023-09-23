@@ -11,13 +11,15 @@ const ExerciseCard = ({ name, info }) => {
     const updatedSets = sets.filter((set) => set.set !== setId);
     setSets([...updatedSets]);
   };
-  const updateSet = (setId, newWeight, newReps, newHold) => {
+  const updateSet = (setId, newWeight, newReps, newHold, newNote) => {
     const updatedSets = sets.map((set) => {
       if (set.set === setId) {
         return {
           ...set,
           weight: newWeight,
           reps: newReps,
+          hold: newHold,
+          note: newNote,
         };
       }
       return set;
@@ -38,6 +40,7 @@ const ExerciseCard = ({ name, info }) => {
             previousWeight={item.weight}
             previousSet={item.set}
             previousHold={item.hold}
+            previousNote={item.note}
             removeSet={removeSet}
             updateSet={updateSet}
           />

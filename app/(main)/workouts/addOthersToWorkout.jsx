@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { users } from "../../../data";
 import FriendItem from "../../../components/FriendItem";
+import { toggleState } from "../../../utils/toggleState";
 
 const AddOthersToWorkout = ({
   show,
@@ -44,13 +45,6 @@ const AddOthersToWorkout = ({
     // TO DO: how to create workout for you, and other users and what to do with adding and removing members during workout
   };
 
-  //
-  const toggleState = (state, id) => {
-    const _stateSet = new Set(state, id);
-    _stateSet.has(id) ? _stateSet.delete(id) : _stateSet.add(id);
-    return Array.from(_stateSet);
-  };
-
   const handleClosing = () => {
     setWorkoutMembers([...members]);
     setShow(false);
@@ -64,7 +58,6 @@ const AddOthersToWorkout = ({
     <>
       <Modal animationType="fade" transparent={true} visible={show}>
         <View style={styles.container}>
-          <Text>{members.length}</Text>
           <View style={styles.header}>
             <Pressable testID={"close-button"} onPress={handleClosing}>
               <View style={styles.headerClose}>

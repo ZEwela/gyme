@@ -24,6 +24,10 @@ const TimerClock = ({ setIsTimerVisible, isTimerVisible }) => {
     },
   };
 
+  useEffect(() => {
+    setResetTimer(true);
+  }, []);
+
   const setTimeDuration = (sec) => {
     const msec = sec * 1000;
     setTimerDuration(msec);
