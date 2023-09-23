@@ -12,13 +12,12 @@ const Workout = () => {
 
   const user = users.find(({ id }) => id === 0);
 
-  const { workout } = useLocalSearchParams();
-  const exercises = workouts.find(({ name }) => name === workout).exercises;
+  const { workoutName } = useLocalSearchParams();
+  const exercises = workouts.find(({ name }) => name === workoutName).exercises;
   // list of friends to choose to do workout with
   const [friends, setFriends] = useState([]);
   const [show, setShow] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
-  const [showAddExercise, setShowAddExercise] = useState(false);
   const [workoutMembers, setWorkoutMembers] = useState([user.id]);
 
   useEffect(() => {
@@ -30,7 +29,7 @@ const Workout = () => {
     <>
       <Stack.Screen
         options={{
-          headerTitle: `${workout.toUpperCase()}`,
+          headerTitle: `${workoutName.toUpperCase()}`,
           headerRight: () => (
             <View style={styles.row}>
               <Pressable onPress={() => setShowAddNote(true)}>
@@ -39,7 +38,7 @@ const Workout = () => {
               <Link
                 href={{
                   pathname: "(main)/exercises",
-                  params: { workoutId: workout },
+                  params: { workoutName: workoutName },
                 }}
               >
                 <MaterialIcons name="fitness-center" size={30} color="white" />
@@ -55,25 +54,17 @@ const Workout = () => {
         <AddOthersToWorkout
           setShow={setShow}
           membersIds={friends}
-          workout={workout}
+          workoutName={workoutName}
           setWorkoutMembers={setWorkoutMembers}
           workoutMembers={workoutMembers}
         />
       )}
       {showAddNote && (
         <AddWorkoutNote
-          workoutId={workout}
+          workout={workoutName}
           user={user}
           setShow={setShowAddNote}
           show={showAddNote}
-        />
-      )}
-      {showAddExercise && (
-        <AddWorkoutNote
-          workoutId={workout}
-          user={user}
-          setShow={setShowAddExercise}
-          show={showAddExercise}
         />
       )}
 
@@ -87,7 +78,7 @@ const Workout = () => {
               exercise: item.name,
               // with state it should be deal diffrently
               workoutMembers: workoutMembers.toString(),
-              workout: workout,
+              workout: workoutName,
             }}
           />
         )}

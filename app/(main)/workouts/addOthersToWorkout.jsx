@@ -16,7 +16,7 @@ const AddOthersToWorkout = ({
   show,
   setShow,
   membersIds,
-  workout,
+  workoutName,
   setWorkoutMembers,
   workoutMembers,
 }) => {

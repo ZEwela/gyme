@@ -1,11 +1,11 @@
 import { ref, onValue } from "firebase/database";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 
-export function getExercises() {
+export function getWorkouts() {
   return new Promise((resolve, reject) => {
-    const exercisesRef = ref(db, "exercises");
+    const workoutsRef = ref(db, "workouts");
 
-    onValue(exercisesRef, (snapshot) => {
+    onValue(workoutsRef, (snapshot) => {
       try {
         const data = snapshot.val();
         const dataInArray = Object.values(data);

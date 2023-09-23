@@ -8,33 +8,38 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import { create } from "../../../actions/workouts/createWorkout";
 
 const createWorkout = () => {
-  const { exerciseId } = useLocalSearchParams();
+  const { exerciseId, exerciseName } = useLocalSearchParams();
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
-    if (exerciseId && !exercises.includes(exerciseId)) {
-      setExercises([...exercises, exerciseId]);
+    const containsExercise = exercises.some(
+      (exercise) => exercise.exerciseName === exerciseName
+    );
+    if (exerciseName && !containsExercise) {
+      setExercises([...exercises, { exerciseId, exerciseName }]);
     }
-  }, [exerciseId]);
+  }, [exerciseName]);
+
+  const createWorkout = () => {
+    create(workoutName, exercises);
+    router.replace({
+      pathname: "workouts",
+    });
+  };
+
+  console.log(exercises);
 
   return (
     <>
       <Stack.Screen
         options={{
           headerRight: () => (
-            <Pressable
-              onPress={() =>
-                // router.push({
-                //   pathname: "workouts/[workout]",
-                //   params: { workout: workoutName },
-                // })
-                console.log("NOT YET")
-              }
-            >
+            <Pressable onPress={createWorkout}>
               <Text style={styles.doneBtn}>Done</Text>
             </Pressable>
           ),
@@ -53,15 +58,18 @@ const createWorkout = () => {
       <Item
         pathname={"(main)/exercises"}
         title={"Add Exercise"}
-        params={{ workoutId: workoutName }}
+        params={{ workoutName: workoutName }}
       />
-      {exercises && (
+      {exercises.length > 0 && (
         <FlatList
           data={exercises}
           renderItem={({ item }) => (
-            <Item title={item} pathname={`exercises/${item}`} />
+            <Item
+              title={item.exerciseName}
+              pathname={`exercises/${item.exerciseName}`}
+            />
           )}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.exerciseId}
         />
       )}
     </>

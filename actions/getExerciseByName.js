@@ -1,11 +1,4 @@
-import {
-  ref,
-  orderByChild,
-  query,
-  equalTo,
-  val,
-  onValue,
-} from "firebase/database";
+import { ref, orderByChild, query, equalTo, onValue } from "firebase/database";
 import { db } from "../firebase";
 
 export function getExerciseByName(name) {
@@ -21,7 +14,7 @@ export function getExerciseByName(name) {
       if (data) {
         exercise = {};
         exercise.id = Object.keys(data)[0];
-        exercise.info = data[exercise.id];
+        exercise.info = Object.values(data)[0];
       } else {
         exercise = null;
       }

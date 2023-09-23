@@ -3,7 +3,7 @@ import { db } from "../firebase";
 
 export async function create(name, technique, description) {
   const exerciseData = {
-    exercise_name: name,
+    exercise_name: name.toLowerCase(),
     technique_url: technique,
     description: description,
   };

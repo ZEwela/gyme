@@ -5,26 +5,31 @@ import { Feather } from "@expo/vector-icons";
 import { getExerciseByName } from "../../../actions/getExerciseByName";
 
 const Exercise = () => {
-  const { exerciseName, workoutId } = useLocalSearchParams();
+  const { exerciseName, workoutName } = useLocalSearchParams();
   const [exercise, setExercise] = useState();
+
+  console.log("From exercise: ", exercise);
   useEffect(() => {
     const fetchExercise = getExerciseByName(exerciseName);
-    setExercise(fetchExercise.info);
+    setExercise(fetchExercise);
   }, [exerciseName]);
 
-  const details = exercise ? exercise.technique_url : null;
-
   const handleAddingExerciseToWorkout = () => {
-    if (workoutId) {
+    if (workoutName.length > 0) {
       // add exercise to this workoutId push to that workout
       router.push({
-        pathname: "(main)/workouts/[workout]",
-        params: { workout: workoutId, exerciseId: exerciseName },
+        pathname: "(main)/workouts/[workoutName]",
+        params: {
+          workoutName: workoutName,
+          exerciseId: exercise.id,
+          exerciseName: exerciseName,
+        },
       });
     } else {
+      console.log("hhhheeeleklel");
       router.push({
         pathname: "(main)/workouts/createWorkout",
-        params: { exerciseId: exerciseName },
+        params: { exerciseId: exercise.id, exerciseName: exerciseName },
       });
     }
   };
@@ -44,15 +49,17 @@ const Exercise = () => {
       <Text style={styles.header}>{exerciseName} </Text>
 
       <View style={styles.body}>
-        {details && (
+        {exercise?.info.technique_url && (
           <>
             <Text style={styles.text}>Exercise technique:</Text>
-            <Link href={details}>
+            <Link href={exercise.info.technique_url}>
               <Feather name="external-link" size={24} color="black" />
             </Link>
           </>
         )}
-        <Text style={styles.text}>Description: {exercise?.description}</Text>
+        <Text style={styles.text}>
+          Description: {exercise?.info.description}
+        </Text>
         {/* <Text style={styles.text}>Muscle Group:</Text> */}
       </View>
     </View>
