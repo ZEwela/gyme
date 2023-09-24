@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 export default function Page() {
   return (
     <View style={styles.container}>
-      <Link href="/workouts" style={styles.main}>
+      <Link href="/users/login" style={styles.main}>
         <Text style={styles.title}>
           Pick
           <AntDesign name="caretright" size={44} color="green" /> workout
