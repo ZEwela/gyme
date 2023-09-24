@@ -1,18 +1,20 @@
-import { ref, onValue } from "firebase/database";
 import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export function getWorkouts() {
-  return new Promise((resolve, reject) => {
-    const workoutsRef = ref(db, "workouts");
+  return new Promise(async (resolve, reject) => {
+    try {
+      const workoutsCollection = collection(db, "workouts");
+      const querySnapshot = await getDocs(workoutsCollection);
+      const workouts = [];
 
-    onValue(workoutsRef, (snapshot) => {
-      try {
-        const data = snapshot.val();
-        const dataInArray = Object.values(data);
-        resolve(dataInArray);
-      } catch (error) {
-        reject(error);
-      }
-    });
+      querySnapshot.forEach((doc) => {
+        const workoutData = doc.data();
+        workouts.push(workoutData);
+      });
+      resolve(workouts);
+    } catch (error) {
+      reject(error);
+    }
   });
 }

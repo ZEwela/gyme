@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-import { getExerciseByName } from "../../../actions/getExerciseByName";
+import { selectExercises } from "../../../store/slices/exercisesSlice";
+import { useSelector } from "react-redux";
 
 const Exercise = () => {
   const { exerciseName, workoutName } = useLocalSearchParams();
   const [exercise, setExercise] = useState();
+  const [loading, setLoading] = useState(true);
+  const exercises = useSelector(selectExercises);
 
-  console.log("From exercise: ", exercise);
   useEffect(() => {
-    const fetchExercise = getExerciseByName(exerciseName);
+    const fetchExercise = exercises.find(
+      ({ exercise_name }) => exercise_name === exerciseName
+    );
     setExercise(fetchExercise);
+    setLoading(false);
   }, [exerciseName]);
 
   const handleAddingExerciseToWorkout = () => {
@@ -33,6 +44,10 @@ const Exercise = () => {
       });
     }
   };
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="green" />;
+  }
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -41,7 +56,6 @@ const Exercise = () => {
           headerRight: () => (
             <Pressable onPress={handleAddingExerciseToWorkout}>
               <Text style={styles.doneBtn}>Add to Workout</Text>
-              {/* <Feather name="check-square" size={30} color="white" /> */}
             </Pressable>
           ),
         }}
@@ -49,18 +63,15 @@ const Exercise = () => {
       <Text style={styles.header}>{exerciseName} </Text>
 
       <View style={styles.body}>
-        {exercise?.info.technique_url && (
+        {exercise?.technique_url && (
           <>
             <Text style={styles.text}>Exercise technique:</Text>
-            <Link href={exercise.info.technique_url}>
+            <Link href={exercise.technique_url}>
               <Feather name="external-link" size={24} color="black" />
             </Link>
           </>
         )}
-        <Text style={styles.text}>
-          Description: {exercise?.info.description}
-        </Text>
-        {/* <Text style={styles.text}>Muscle Group:</Text> */}
+        <Text style={styles.text}>Description: {exercise?.description}</Text>
       </View>
     </View>
   );
@@ -78,6 +89,7 @@ const styles = StyleSheet.create({
   header: {
     fontWeight: "bold",
     fontSize: 20,
+    textTransform: "capitalize",
   },
   body: {
     alignItems: "center",

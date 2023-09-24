@@ -1,16 +1,57 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/slices/userSlice";
+import { auth, db, getAuth } from "../firebase";
+import { onValue, ref } from "firebase/database";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useLayoutEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Page() {
+  const dispatch = useDispatch();
+
+  useLayoutEffect(() => {
+    checkLoggedUser();
+  }, []);
+
+  const checkLoggedUser = async () => {
+    auth.onAuthStateChanged(async (user) => {
+      console.log(user);
+      if (user) {
+        const userRef = doc(db, "users/" + user.uid);
+
+        try {
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            dispatch(setUser(userData));
+            setTimeout(() => {
+              router.replace("workouts");
+            }, 2000);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setTimeout(() => {
+          router.replace("users/login");
+        }, 2000);
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Link href="/users/login" style={styles.main}>
+      {/* <Link href="/users/login" style={styles.main}>
         <Text style={styles.title}>
           Pick
           <AntDesign name="caretright" size={44} color="green" /> workout
         </Text>
-      </Link>
+      </Link> */}
+      <FontAwesome5 name="door-open" size={90} color="green" />
+      <ActivityIndicator size={"large"} color="green" />
     </View>
   );
 }

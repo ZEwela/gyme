@@ -27,20 +27,6 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     if (getEmailValidationStatus && email !== "") {
-      //   await createUserWithEmailAndPassword(firebaseAuth, email, password).then(
-      //     (userCred) => {
-      //       const data = {
-      //         _id: userCred.user.uid,
-      //         fullName: fullName,
-      //         providerData: userCred.user.providerData[0],
-      //       };
-      //       setDoc(doc(firestoreDB, "users", userCred.user.uid), data).then(
-      //         () => {
-      //           navigation.navigate("LoginScreen");
-      //         }
-      //       );
-      //     }
-      //   );
       try {
         const userCred = await createUserWithEmailAndPassword(
           auth,
@@ -48,17 +34,18 @@ const SignUp = () => {
           password
         );
 
-        const userRef = ref(db, "users/" + userCred.user.uid);
+        const userDocRef = doc(db, "users", userCred.user.uid);
 
         const userData = {
           _id: userCred.user.uid,
           fullName: fullName,
+          friends: [],
           providerData: userCred.user.providerData[0],
         };
 
-        await set(userRef, userData);
+        await setDoc(userDocRef, userData);
 
-        router.push("users/login");
+        router.replace("users/login");
       } catch (error) {
         // Handle errors here
         if (error.message.includes("email-already-in-use")) {
@@ -111,7 +98,7 @@ const SignUp = () => {
 
           <View style={styles.footer}>
             <Text style={styles.text}>Have an account?</Text>
-            <TouchableOpacity onPress={() => console.log("not yet")}>
+            <TouchableOpacity onPress={() => router.replace("users/login")}>
               <Text style={[styles.text, { fontWeight: "bold" }]}>
                 Login Here
               </Text>

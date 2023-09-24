@@ -4,9 +4,12 @@ import { useLocalSearchParams } from "expo-router";
 
 import Item from "../../../components/Item";
 import { getExercises } from "../../../actions/getExercises";
+import { useDispatch } from "react-redux";
+import { setExercises as setData } from "../../../store/slices/exercisesSlice";
 
 const Exercises = () => {
   const { workoutName } = useLocalSearchParams();
+  const dispatch = useDispatch();
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +18,7 @@ const Exercises = () => {
       try {
         const data = await getExercises();
         setExercises([...data]);
+        dispatch(setData(data));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching exercises: ", error);
@@ -43,7 +47,6 @@ const Exercises = () => {
               params={{ workoutName: workoutName }}
             />
           )}
-          keyExtractor={(item) => item.exercise_name}
         />
       )}
     </>

@@ -13,8 +13,12 @@ import { auth, db } from "../../../firebase";
 import UserInput from "../../../components/UserInput";
 import { router } from "expo-router";
 import { get, ref } from "firebase/database";
+import { doc, getDoc } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../store/slices/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [getEmailValidationStatus, setGetEmailValidationStatus] =
@@ -32,13 +36,13 @@ const Login = () => {
         );
 
         if (userCred) {
-          const userRef = ref(db, "users/" + userCred.user.uid);
+          const userDocRef = doc(db, "users", userCred.user.uid);
+          const userDocSnap = await getDoc(userDocRef);
 
-          const snapshot = await get(userRef);
-
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-            router.push("workouts");
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            dispatch(setUser(userData));
+            router.replace("workouts");
           }
         }
       } catch (err) {

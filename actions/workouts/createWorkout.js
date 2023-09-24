@@ -1,23 +1,23 @@
-import { ref, set, push, serverTimestamp } from "firebase/database";
 import { db } from "../../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 export async function create(name, exercisesList) {
-  const timestamp = serverTimestamp();
-  const workoutData = {
-    workout_name: name.toLowerCase(),
-    exercisesList: exercisesList,
-    timestamp: timestamp,
-  };
+  try {
+    const newWorkoutRef = doc(collection(db, "workouts"));
+    const workoutId = newWorkoutRef._key.path.segments[1];
+    const workoutData = {
+      id: workoutId,
+      workout_name: name.toLowerCase(),
+      exercises_list: exercisesList,
+    };
 
-  const newWorkoutRef = await push(ref(db, "workouts"));
+    await setDoc(newWorkoutRef, workoutData);
 
-  await set(newWorkoutRef, workoutData)
-    .then(() => {
-      alert("Workout saved");
-    })
-    .catch((error) => {
-      alert(
-        "Sorry something went wrong while creating workout, please try again later"
-      );
-    });
+    alert("Workout saved");
+  } catch (error) {
+    alert(
+      "Sorry, something went wrong while creating the workout. Please try again later."
+    );
+    console.error(error);
+  }
 }

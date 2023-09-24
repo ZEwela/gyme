@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 
 const Item = ({ title, pathname, params }) => {
-  console.log("From item", title, pathname, params);
   return (
     <View style={styles.itemContainer}>
       <Link style={styles.item} href={{ pathname: pathname, params: params }}>
