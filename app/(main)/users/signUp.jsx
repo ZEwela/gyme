@@ -1,61 +1,70 @@
 import {
   View,
   Text,
+  Dimensions,
+  Image,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
 } from "react-native";
 import React, { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
-import { auth, db } from "../../../firebase";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import UserInput from "../../../components/UserInput";
-import { router } from "expo-router";
-import { get, ref } from "firebase/database";
 
-const Login = () => {
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../../firebase";
+import { ref, set } from "firebase/database";
+import { router } from "expo-router";
+
+const SignUp = () => {
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+
   const [getEmailValidationStatus, setGetEmailValidationStatus] =
     useState(false);
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState(null);
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     if (getEmailValidationStatus && email !== "") {
+      //   await createUserWithEmailAndPassword(firebaseAuth, email, password).then(
+      //     (userCred) => {
+      //       const data = {
+      //         _id: userCred.user.uid,
+      //         fullName: fullName,
+      //         providerData: userCred.user.providerData[0],
+      //       };
+      //       setDoc(doc(firestoreDB, "users", userCred.user.uid), data).then(
+      //         () => {
+      //           navigation.navigate("LoginScreen");
+      //         }
+      //       );
+      //     }
+      //   );
       try {
-        const userCred = await signInWithEmailAndPassword(
+        const userCred = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
 
-        if (userCred) {
-          const userRef = ref(db, "users/" + userCred.user.uid);
+        const userRef = ref(db, "users/" + userCred.user.uid);
 
-          const snapshot = await get(userRef);
+        const userData = {
+          _id: userCred.user.uid,
+          fullName: fullName,
+          providerData: userCred.user.providerData[0],
+        };
 
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-            router.push("workouts");
-          }
+        await set(userRef, userData);
+
+        router.push("users/login");
+      } catch (error) {
+        // Handle errors here
+        if (error.message.includes("email-already-in-use")) {
+          alert("Email already in use");
         }
-      } catch (err) {
-        console.log(err);
-        if (err.message.includes("wrong-password")) {
-          setAlert(true);
-          setAlertMsg("Invalid Password");
-        } else if (err.message.includes("user-not-found")) {
-          setAlert(true);
-          setAlertMsg("User not found");
-        } else {
-          setAlert(true);
-          setAlertMsg("Something went wrong, try again later");
-        }
-        setInterval(() => {
-          setAlert(false);
-        }, 2000);
+        console.error("Error creating user:", error);
       }
     }
   };
@@ -66,16 +75,23 @@ const Login = () => {
         contentContainerStyle={{
           alignItems: "center",
           justifyContent: "start",
-          gap: 20,
         }}
         style={styles.box}
       >
-        <AntDesign name="login" size={70} color="green" />
-        <Text style={styles.header}>Welcome Back!</Text>
+        <MaterialCommunityIcons
+          name="folder-account-outline"
+          size={70}
+          color="green"
+        />
+        <Text style={styles.header}>Join With Us!</Text>
 
         <View style={styles.content}>
-          {alert && <Text style={styles.alertText}>{alertMsg}</Text>}
-
+          <UserInput
+            placeHolder={"Full Name"}
+            isPass={false}
+            setStateValue={setFullName}
+            iconName={"account"}
+          />
           <UserInput
             placeHolder={"Email"}
             isPass={false}
@@ -83,24 +99,21 @@ const Login = () => {
             iconName={"email-outline"}
             setGetEmailValidationStatus={setGetEmailValidationStatus}
           />
-
           <UserInput
             placeHolder={"Password"}
             isPass={true}
             setStateValue={setPassword}
             iconName={"lock-outline"}
           />
-
-          <TouchableOpacity onPress={handleLogin} style={styles.btn}>
+          <TouchableOpacity onPress={handleSignUp} style={styles.btn}>
             <Text style={styles.textBtn}>Sign In</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
-            <Text style={styles.text}>Don't have account?</Text>
-
-            <TouchableOpacity onPress={() => router.push("users/signUp")}>
+            <Text style={styles.text}>Have an account?</Text>
+            <TouchableOpacity onPress={() => console.log("not yet")}>
               <Text style={[styles.text, { fontWeight: "bold" }]}>
-                Create Here
+                Login Here
               </Text>
             </TouchableOpacity>
           </View>
@@ -110,7 +123,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {

@@ -22,6 +22,10 @@ export default function UsersLayout() {
         name="login"
         options={{ headerShown: false }}
       ></Stack.Screen>
+      <Stack.Screen
+        name="signUp"
+        options={{ headerShown: false }}
+      ></Stack.Screen>
       <Stack.Screen name="[userName]"></Stack.Screen>
     </Stack>
   );

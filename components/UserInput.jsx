@@ -91,4 +91,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-className = "flex-1 text-base text-primaryText font-semibold -mt-1";
