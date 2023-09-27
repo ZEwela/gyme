@@ -1,10 +1,14 @@
-import { db } from "../../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-export function getWorkouts() {
+export function getWorkoutsByUser() {
   return new Promise(async (resolve, reject) => {
     try {
-      const workoutsCollection = collection(db, "workouts");
+      const user = auth.currentUser;
+      const workoutsCollection = query(
+        collection(db, "workouts"),
+        where("user_id", "==", user.uid)
+      );
       const querySnapshot = await getDocs(workoutsCollection);
       const workouts = [];
 

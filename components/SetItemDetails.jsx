@@ -16,7 +16,6 @@ const SetItemDetails = ({
   setHold,
   weight,
   reps,
-  set,
   setReps,
   setWeight,
   note,

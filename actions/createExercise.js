@@ -7,7 +7,7 @@ export async function create(name, technique, description) {
     const exerciseId = newExerciseRef._key.path.segments[1];
 
     const exerciseData = {
-      id: exerciseId,
+      exercise_id: exerciseId,
       exercise_name: name.toLowerCase(),
       technique_url: technique,
       description: description,

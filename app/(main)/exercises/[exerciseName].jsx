@@ -12,7 +12,7 @@ import { selectExercises } from "../../../store/slices/exercisesSlice";
 import { useSelector } from "react-redux";
 
 const Exercise = () => {
-  const { exerciseName, workoutName } = useLocalSearchParams();
+  const { exerciseName, workoutName, workoutId } = useLocalSearchParams();
   const [exercise, setExercise] = useState();
   const [loading, setLoading] = useState(true);
   const exercises = useSelector(selectExercises);
@@ -29,15 +29,15 @@ const Exercise = () => {
     if (workoutName.length > 0) {
       // add exercise to this workoutId push to that workout
       router.push({
-        pathname: "(main)/workouts/[workoutName]",
+        pathname: "(main)/workouts/[workout]",
         params: {
+          workout: workoutId,
           workoutName: workoutName,
           exerciseId: exercise.id,
           exerciseName: exerciseName,
         },
       });
     } else {
-      console.log("hhhheeeleklel");
       router.push({
         pathname: "(main)/workouts/createWorkout",
         params: { exerciseId: exercise.id, exerciseName: exerciseName },

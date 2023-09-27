@@ -30,7 +30,7 @@ export default function WorkoutsLayout() {
       />
 
       <Stack.Screen
-        name="[workoutName]"
+        name="[workout]"
         options={({ route }) => ({
           headerTitle: route.params.workoutName.toUpperCase(),
         })}

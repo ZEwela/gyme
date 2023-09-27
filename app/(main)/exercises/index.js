@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import Item from "../../../components/Item";
 import { getExercises } from "../../../actions/getExercises";
 import { useDispatch } from "react-redux";
-import { setExercises as setData } from "../../../store/slices/exercisesSlice";
+import { setExercises as setExercisesInStore } from "../../../store/slices/exercisesSlice";
 
 const Exercises = () => {
   const { workoutName } = useLocalSearchParams();
@@ -18,7 +18,7 @@ const Exercises = () => {
       try {
         const data = await getExercises();
         setExercises([...data]);
-        dispatch(setData(data));
+        dispatch(setExercisesInStore(data));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching exercises: ", error);

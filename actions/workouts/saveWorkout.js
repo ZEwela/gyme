@@ -1,21 +1,23 @@
-import { auth, db } from "../../firebase";
 import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase";
 
-export async function create(name, exercisesList) {
+export const saveWorkout = (workout) => {
   return new Promise(async (resolve, reject) => {
     try {
       const timeStamp = serverTimestamp();
       const user = auth.currentUser;
+
       const newWorkoutRef = doc(collection(db, "workouts"));
 
       const workoutId = newWorkoutRef._key.path.segments[1];
 
       const workoutData = {
         workout_id: workoutId,
-        workout_name: name.toLowerCase(),
-        exercises_list: exercisesList,
+        workout_name: workout.workout_name.toLowerCase(),
+        exercises_list: workout.exercises_list,
         created_at: timeStamp,
         user_id: user.uid,
+        sets: workout.sets,
       };
 
       await setDoc(newWorkoutRef, workoutData);
@@ -27,4 +29,4 @@ export async function create(name, exercisesList) {
       console.error(error);
     }
   });
-}
+};

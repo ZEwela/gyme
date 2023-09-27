@@ -8,7 +8,7 @@ import {
 } from "@expo/vector-icons";
 
 const SetItem = ({
-  previousSet,
+  previousSetOrder,
   previousReps,
   previousWeight,
   previousHold,
@@ -19,17 +19,17 @@ const SetItem = ({
   const [isVisible, setIsVisible] = useState(false);
   const [weight, setWeight] = useState(previousWeight || 0);
   const [reps, setReps] = useState(previousReps || 0);
-  const [set, setSet] = useState(previousSet);
+  const [setOrder, setSetOrder] = useState(previousSetOrder);
   const [hold, setHold] = useState(previousHold || 0);
   const [note, setNote] = useState(previousNote || "");
 
   const onClose = () => {
-    updateSet(set, weight, reps, hold, note);
+    updateSet(setOrder, weight, reps, hold, note);
     setIsVisible(!isVisible);
   };
 
   const onDelete = () => {
-    removeSet(set);
+    removeSet(setOrder);
     setIsVisible(!isVisible);
   };
 
@@ -47,7 +47,6 @@ const SetItem = ({
           setWeight={setWeight}
           reps={reps}
           setReps={setReps}
-          set={set}
           onDelete={onDelete}
           setIsVisible={setIsVisible}
           hold={hold}

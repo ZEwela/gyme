@@ -18,7 +18,6 @@ export default function Page() {
 
   const checkLoggedUser = async () => {
     auth.onAuthStateChanged(async (user) => {
-      console.log(user);
       if (user) {
         const userRef = doc(db, "users/" + user.uid);
 

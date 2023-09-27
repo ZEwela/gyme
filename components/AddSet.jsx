@@ -1,25 +1,42 @@
 import { View, Text, StyleSheet, Button, Pressable } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { setUserWorkoutSetsByExerciseId } from "../store/slices/userWorkoutsSlice";
 
-const AddSet = ({ sets, setSets }) => {
+const AddSet = ({ sets, setSets, exerciseId }) => {
+  console.log("sets from addsets", sets);
+  console.log("exerciseId from addsets", exerciseId);
+  const dispatch = useDispatch();
   const handleAddingSet = () => {
     let newSet;
 
     if (sets?.length) {
       newSet = {
         reps: sets[sets.length - 1].reps,
-        set: sets[sets.length - 1].set,
+        set_order: sets[sets.length - 1].set_order,
         weight: sets[sets.length - 1].weight,
+        hold: sets[sets.length - 1].hold,
+        note: sets[sets.length - 1].note,
+        created_at: new Date().toISOString(),
       };
     } else {
-      newSet = { reps: 0, set: 0, weight: 0 };
+      newSet = {
+        reps: 0,
+        set_order: 0,
+        weight: 0,
+        hold: 0,
+        note: "",
+        created_at: new Date().toISOString(),
+      };
     }
 
-    newSet.set += 1;
+    newSet.set_order += 1;
     const updatedSets = [...sets, newSet];
 
     setSets(updatedSets);
+    console.log(exerciseId, updatedSets);
+    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
   };
 
   return (

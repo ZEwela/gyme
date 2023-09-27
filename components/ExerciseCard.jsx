@@ -3,42 +3,50 @@ import React, { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import SetItem from "./SetItem";
 import AddSet from "./AddSet";
+import { setUserWorkoutSetsByExerciseId } from "../store/slices/userWorkoutsSlice";
+import { useDispatch } from "react-redux";
 
-const ExerciseCard = ({ name, info }) => {
+const ExerciseCard = ({ name, info, exerciseId }) => {
+  console.log("exerciseid from ExerciseCard", exerciseId);
   const [sets, setSets] = useState([...info] || []);
 
-  const removeSet = (setId) => {
-    const updatedSets = sets.filter((set) => set.set !== setId);
+  const dispatch = useDispatch();
+  const removeSet = (setOrder) => {
+    const updatedSets = sets.filter((set) => set.set_order !== setOrder);
     setSets([...updatedSets]);
+    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
   };
-  const updateSet = (setId, newWeight, newReps, newHold, newNote) => {
+  const updateSet = (setOrder, newWeight, newReps, newHold, newNote) => {
     const updatedSets = sets.map((set) => {
-      if (set.set === setId) {
+      if (set.set_order === setOrder) {
         return {
           ...set,
           weight: newWeight,
           reps: newReps,
           hold: newHold,
           note: newNote,
+          created_at: new Date().toISOString(),
         };
       }
       return set;
     });
     setSets([...updatedSets]);
+    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
   };
 
+  console.log("sets from ExerciseCard: ", sets);
   return (
     <View style={styles.item}>
       <Text style={styles.text}>{name}</Text>
 
       <FlatList
         data={sets}
-        keyExtractor={(item) => item.set}
+        keyExtractor={(item) => item.set_order}
         renderItem={({ item }) => (
           <SetItem
             previousReps={item.reps}
             previousWeight={item.weight}
-            previousSet={item.set}
+            previousSetOrder={item.set_order}
             previousHold={item.hold}
             previousNote={item.note}
             removeSet={removeSet}
@@ -46,7 +54,9 @@ const ExerciseCard = ({ name, info }) => {
           />
         )}
         horizontal={true}
-        ListFooterComponent={<AddSet sets={sets} setSets={setSets} />}
+        ListFooterComponent={
+          <AddSet sets={sets} setSets={setSets} exerciseId={exerciseId} />
+        }
       />
     </View>
   );

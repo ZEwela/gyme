@@ -9,10 +9,14 @@ import {
   View,
 } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import { create } from "../../../actions/workouts/createWorkout";
+import { auth } from "../../../firebase";
+import { useDispatch } from "react-redux";
+import { setUserWorkout } from "../../../store/slices/userWorkoutsSlice";
 
 const createWorkout = () => {
+  const dispatch = useDispatch();
   const { exerciseId, exerciseName } = useLocalSearchParams();
+
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
 
@@ -21,18 +25,28 @@ const createWorkout = () => {
       (exercise) => exercise.exerciseName === exerciseName
     );
     if (exerciseName && !containsExercise) {
-      setExercises([...exercises, { exerciseId, exerciseName }]);
+      setExercises([
+        ...exercises,
+        { exercise_id: exerciseId, exercise_name: exerciseName },
+      ]);
     }
   }, [exerciseName]);
 
   const createWorkout = () => {
-    create(workoutName, exercises);
+    const workoutData = {
+      workout_id: new Date().toISOString(),
+      workout_name: workoutName.toLowerCase(),
+      exercises_list: exercises,
+      created_at: new Date().toISOString(),
+      user_id: auth.currentUser.uid,
+    };
+    dispatch(setUserWorkout(workoutData));
+
     router.replace({
-      pathname: "workouts",
+      pathname: "workouts/[workout]",
+      params: { workoutName: workoutName },
     });
   };
-
-  console.log(exercises);
 
   return (
     <>
@@ -65,11 +79,11 @@ const createWorkout = () => {
           data={exercises}
           renderItem={({ item }) => (
             <Item
-              title={item.exerciseName}
-              pathname={`exercises/${item.exerciseName}`}
+              title={item.exercise_name}
+              pathname={`exercises/${item.exercise_name}`}
             />
           )}
-          keyExtractor={(item) => item.exerciseId}
+          keyExtractor={(item) => item.exercise_id}
         />
       )}
     </>
