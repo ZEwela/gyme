@@ -1,34 +1,40 @@
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  Pressable,
-  Text,
-} from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
 import Item from "../../../components/Item";
 import { getWorkoutsByUser } from "../../../actions/workouts/getWorkoutsByUser";
-import { useDispatch } from "react-redux";
 import { setUserWorkouts } from "../../../store/slices/userWorkoutsSlice";
-import { router } from "expo-router";
+import { Workout } from "../../../types";
 
-const Workouts = () => {
+interface WorkoutsProps {}
+
+const Workouts: React.FC<WorkoutsProps> = () => {
   const dispatch = useDispatch();
-  const [workouts, setWorkouts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const workouts = await getWorkoutsByUser();
-        setWorkouts(workouts);
-        const userWorkouts = workouts.map((workout) => {
-          return {
-            ...workout,
-            created_at: workout.created_at.toDate().toISOString(),
-          };
-        });
-        dispatch(setUserWorkouts(userWorkouts));
+
+        const workoutsWithCreatedAtAsString = workouts.map(
+          (workout: Workout) => {
+            if (typeof workout.created_at === "string") {
+              return workout;
+            } else {
+              return {
+                ...workout,
+                created_at: workout.created_at.toDate().toISOString(),
+              };
+            }
+          }
+        );
+
+        setWorkouts(workoutsWithCreatedAtAsString);
+        dispatch(setUserWorkouts(workoutsWithCreatedAtAsString));
+
         setLoading(false);
       } catch (error) {
         alert(
@@ -41,14 +47,19 @@ const Workouts = () => {
     fetchData();
   }, []);
 
-  console.log("Workouts: ", workouts);
+  console.log("WORKOUTS: ", workouts);
+
   if (loading) {
     return <ActivityIndicator />;
   }
 
   return (
     <>
-      <Item pathname={"workouts/createWorkout"} title={"Create workout"} />
+      <Item
+        pathname={"workouts/createWorkout"}
+        title={"Create workout"}
+        params={{}}
+      />
 
       {workouts?.length > 0 && (
         <FlatList
