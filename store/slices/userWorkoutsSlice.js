@@ -10,33 +10,41 @@ const userWorkoutsSlice = createSlice({
     setUserWorkouts(state, action) {
       state.userWorkouts = action.payload;
     },
-    resetUserWorkouts(state, action) {
+    resetUserWorkouts(state) {
       state.userWorkouts = null;
+    },
+    addUserWorkoutToWorkouts(state, action) {
+      state.userWorkouts = [action.payload, ...(state.userWorkouts || [])];
     },
     setUserWorkout(state, action) {
       state.userWorkout = action.payload;
     },
-    resetUserWorkout(state, action) {
+    resetUserWorkout(state) {
       state.userWorkout = null;
     },
-    setUserWorkoutByName(state, action) {
-      if (state.userWorkouts && state.userWorkouts.length) {
-        const foundWorkout = state.userWorkouts.find(
-          (workout) => workout.workout_name === action.payload
-        );
-        state.userWorkout = foundWorkout;
-      }
-      console.log("from userWorkoutSlice, userWorkout", state.userWorkout);
+    setUserWorkoutById(state, action) {
+      const foundWorkout = state.userWorkouts?.find(
+        (workout) => workout.workout_id === action.payload
+      );
+      state.userWorkout = foundWorkout || null;
     },
     setUserWorkoutSetsByExerciseId(state, action) {
       const { exerciseId, updatedSets } = action.payload;
-      const updatedSetsObject = { ...(state.userWorkout.sets || {}) };
+      const updatedSetsObject = { ...(state.userWorkout?.sets || {}) };
       updatedSetsObject[exerciseId] = updatedSets;
       state.userWorkout = {
         ...state.userWorkout,
         sets: updatedSetsObject,
       };
-      console.log("FROM userWorkoutSlice: ", state.userWorkout);
+    },
+    addExerciseToUserWorkout(state, action) {
+      state.userWorkout = {
+        ...state.userWorkout,
+        exercises_list: [
+          ...(state.userWorkout?.exercises_list || []),
+          action.payload,
+        ],
+      };
     },
   },
 });
@@ -56,9 +64,11 @@ export const selectSetsByExerciseId = (state, exerciseId) => {
 export const {
   setUserWorkouts,
   resetUserWorkouts,
-  setUserWorkoutByName,
+  setUserWorkoutById,
   setUserWorkoutSetsByExerciseId,
   setUserWorkout,
   resetUserWorkout,
+  addUserWorkoutToWorkouts,
+  addExerciseToUserWorkout,
 } = userWorkoutsSlice.actions;
 export default userWorkoutsSlice.reducer;

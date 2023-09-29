@@ -5,9 +5,8 @@ import { useDispatch } from "react-redux";
 import { setUserWorkoutSetsByExerciseId } from "../store/slices/userWorkoutsSlice";
 
 const AddSet = ({ sets, setSets, exerciseId }) => {
-  console.log("sets from addsets", sets);
-  console.log("exerciseId from addsets", exerciseId);
   const dispatch = useDispatch();
+
   const handleAddingSet = () => {
     let newSet;
 
@@ -35,7 +34,6 @@ const AddSet = ({ sets, setSets, exerciseId }) => {
     const updatedSets = [...sets, newSet];
 
     setSets(updatedSets);
-    console.log(exerciseId, updatedSets);
     dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
   };
 

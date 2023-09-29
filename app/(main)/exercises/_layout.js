@@ -24,12 +24,7 @@ export default function MainLayout() {
         options={{ headerTitle: "Create exercise" }}
       ></Stack.Screen>
 
-      <Stack.Screen
-        name="[exerciseName]"
-        options={({ route }) => ({
-          headerTitle: route.params.exerciseName.toUpperCase(),
-        })}
-      ></Stack.Screen>
+      <Stack.Screen name="[exerciseName]"></Stack.Screen>
     </Stack>
   );
 }

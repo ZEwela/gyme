@@ -11,19 +11,24 @@ import {
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { auth } from "../../../firebase";
 import { useDispatch } from "react-redux";
-import { setUserWorkout } from "../../../store/slices/userWorkoutsSlice";
+import { addUserWorkoutToWorkouts } from "../../../store/slices/userWorkoutsSlice";
 
 const createWorkout = () => {
   const dispatch = useDispatch();
+
+  // when user comes from /(main)/exercises/[exerciseName]
   const { exerciseId, exerciseName } = useLocalSearchParams();
 
   const [workoutName, setWorkoutName] = useState("");
   const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
+    // check if choosen exercise is not already in exercises list
     const containsExercise = exercises.some(
       (exercise) => exercise.exerciseName === exerciseName
     );
+
+    // add exercise to exercises when is not already in it
     if (exerciseName && !containsExercise) {
       setExercises([
         ...exercises,
@@ -33,18 +38,31 @@ const createWorkout = () => {
   }, [exerciseName]);
 
   const createWorkout = () => {
+    // check if user provided workout name
+    if (!workoutName) {
+      alert("Name your workout");
+      return;
+    }
+
+    // prepare workout data (created_at and workout_id will be change while adding to db)
     const workoutData = {
-      workout_id: new Date().toISOString(),
+      workout_id: workoutName.toLowerCase(),
       workout_name: workoutName.toLowerCase(),
       exercises_list: exercises,
       created_at: new Date().toISOString(),
       user_id: auth.currentUser.uid,
     };
-    dispatch(setUserWorkout(workoutData));
 
+    // add new workout to workouts list in redux store
+    dispatch(addUserWorkoutToWorkouts(workoutData));
+
+    // take user to workout page
     router.replace({
       pathname: "workouts/[workout]",
-      params: { workoutName: workoutName },
+      params: {
+        workout: workoutData.workout_id,
+        workoutId: workoutData.workout_id,
+      },
     });
   };
 
@@ -69,18 +87,15 @@ const createWorkout = () => {
         />
       </View>
 
-      <Item
-        pathname={"(main)/exercises"}
-        title={"Add Exercise"}
-        params={{ workoutName: workoutName }}
-      />
+      <Item pathname={"/(main)/exercises"} title={"Add Exercise"} />
+
       {exercises.length > 0 && (
         <FlatList
           data={exercises}
           renderItem={({ item }) => (
             <Item
               title={item.exercise_name}
-              pathname={`exercises/${item.exercise_name}`}
+              pathname={`/(main)/exercises/${item.exercise_name}`}
             />
           )}
           keyExtractor={(item) => item.exercise_id}

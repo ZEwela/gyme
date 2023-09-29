@@ -16,11 +16,6 @@ const Exercise = () => {
 
   const { exerciseId, workoutMembers, workout } = params;
 
-  const sets = useSelector((state) =>
-    selectSetsByExerciseId(state, exerciseId)
-  );
-  console.log("FROM Exercise, sets: ", sets, exerciseId);
-
   // TODO: change when you will have store
   const workoutMembersToArray = workoutMembers?.split(",") || [];
 
@@ -47,7 +42,7 @@ const Exercise = () => {
       <FlatList
         data={members}
         renderItem={({ item }) => (
-          <ExerciseCard name={item.name} info={sets} exerciseId={exerciseId} />
+          <ExerciseCard name={item.name} exerciseId={exerciseId} />
         )}
       />
     </View>

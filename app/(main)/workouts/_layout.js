@@ -29,12 +29,7 @@ export default function WorkoutsLayout() {
         options={{ headerTitle: "Create workout" }}
       />
 
-      <Stack.Screen
-        name="[workout]"
-        options={({ route }) => ({
-          headerTitle: route.params.workoutName.toUpperCase(),
-        })}
-      />
+      <Stack.Screen name="[workout]" />
 
       <Stack.Screen
         name="exercises/[exercise]"

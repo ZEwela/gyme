@@ -17,16 +17,14 @@ export const saveWorkout = (workout) => {
         exercises_list: workout.exercises_list,
         created_at: timeStamp,
         user_id: user.uid,
-        sets: workout.sets,
+        sets: workout.sets || null,
       };
 
       await setDoc(newWorkoutRef, workoutData);
       resolve("Workout saved");
-
-      // alert("Workout saved");
     } catch (error) {
       reject(error);
-      console.error(error);
+      console.error("Error trying to save workout: ", error);
     }
   });
 };

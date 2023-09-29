@@ -7,17 +7,27 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
 import { Feather } from "@expo/vector-icons";
+
 import { selectExercises } from "../../../store/slices/exercisesSlice";
-import { useSelector } from "react-redux";
+import {
+  addExerciseToUserWorkout,
+  selectWorkout,
+} from "../../../store/slices/userWorkoutsSlice";
 
 const Exercise = () => {
-  const { exerciseName, workoutName, workoutId } = useLocalSearchParams();
+  const dispatch = useDispatch();
+  const { exerciseName } = useLocalSearchParams();
+
+  const exercises = useSelector(selectExercises);
+  const workout = useSelector(selectWorkout);
+
   const [exercise, setExercise] = useState();
   const [loading, setLoading] = useState(true);
-  const exercises = useSelector(selectExercises);
 
   useEffect(() => {
+    // find exercise in redux store exercises to display details
     const fetchExercise = exercises.find(
       ({ exercise_name }) => exercise_name === exerciseName
     );
@@ -26,21 +36,39 @@ const Exercise = () => {
   }, [exerciseName]);
 
   const handleAddingExerciseToWorkout = () => {
-    if (workoutName.length > 0) {
-      // add exercise to this workoutId push to that workout
+    if (workout) {
+      if (
+        workout.exercises_list.find(
+          ({ exercise_id }) => exercise_id === exercise.exercise_id
+        )
+      ) {
+        alert(`${exercise.exercise_name} is already in workout list`);
+        return;
+      }
+      // add exercise to redux store workout.exercises_list
+      dispatch(
+        addExerciseToUserWorkout({
+          exercise_id: exercise.exercise_id,
+          exercise_name: exercise.exercise_name,
+        })
+      );
       router.push({
         pathname: "(main)/workouts/[workout]",
         params: {
-          workout: workoutId,
-          workoutName: workoutName,
-          exerciseId: exercise.id,
-          exerciseName: exerciseName,
+          workout: workout.workout_id,
+          workoutName: workout.workout_name,
+          workoutId: workout.workout_id,
+          // exerciseId: exercise.id,
+          // exerciseName: exercise.exercise_name,
         },
       });
     } else {
       router.push({
         pathname: "(main)/workouts/createWorkout",
-        params: { exerciseId: exercise.id, exerciseName: exerciseName },
+        params: {
+          exerciseId: exercise.exercise_id,
+          exerciseName: exercise.exercise_name,
+        },
       });
     }
   };

@@ -14,6 +14,7 @@ export function getExercises() {
       });
       resolve(exercises);
     } catch (error) {
+      console.error("Error fetching exercises: ", error);
       reject(error);
     }
   });

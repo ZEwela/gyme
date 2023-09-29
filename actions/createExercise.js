@@ -14,7 +14,6 @@ export async function create(name, technique, description) {
     };
 
     await setDoc(newExerciseRef, exerciseData);
-    alert("Exercise saved");
   } catch (error) {
     console.log(error);
     alert(

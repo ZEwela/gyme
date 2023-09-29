@@ -47,10 +47,8 @@ const Workouts: React.FC<WorkoutsProps> = () => {
     fetchData();
   }, []);
 
-  console.log("WORKOUTS: ", workouts);
-
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator color={"green"} />;
   }
 
   return (
@@ -66,9 +64,16 @@ const Workouts: React.FC<WorkoutsProps> = () => {
           data={workouts}
           renderItem={({ item }) => (
             <Item
-              title={item.workout_name}
+              title={`${item.workout_name} / ${
+                typeof item.created_at === "string"
+                  ? item.created_at.slice(0, 10)
+                  : null
+              }`}
               pathname={`workouts/${item.workout_id}`}
-              params={{ workoutName: item.workout_name }}
+              params={{
+                workoutName: item.workout_name,
+                workoutId: item.workout_id,
+              }}
             />
           )}
           keyExtractor={(item) => item.workout_id}

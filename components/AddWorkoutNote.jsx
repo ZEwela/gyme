@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 
-const AddWorkoutNote = ({ workoutId, user, show, setShow }) => {
+const AddWorkoutNote = ({ workout, user, show, setShow }) => {
   const onClose = () => {
     setShow(!show);
     // set note to database
@@ -17,10 +17,10 @@ const AddWorkoutNote = ({ workoutId, user, show, setShow }) => {
   const [note, setNote] = useState("");
   useEffect(() => {
     const note = user.workoutsHistory.find(
-      ({ workoutName }) => workoutName === workoutId
+      ({ workoutName }) => workoutName === workout
     ).note;
     setNote(note);
-  }, [workoutId]);
+  }, [workout]);
 
   return (
     <View>

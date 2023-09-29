@@ -1,7 +1,8 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { TextInput } from "react-native-gesture-handler";
+
 import { create } from "../../../actions/createExercise";
 
 const createExercise = () => {
@@ -14,6 +15,8 @@ const createExercise = () => {
     setName("");
     setTechnique("");
     setDescription("");
+
+    router.replace("/(main)/exercises");
   };
 
   return (

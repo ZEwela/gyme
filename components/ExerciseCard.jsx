@@ -1,16 +1,23 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import SetItem from "./SetItem";
 import AddSet from "./AddSet";
-import { setUserWorkoutSetsByExerciseId } from "../store/slices/userWorkoutsSlice";
-import { useDispatch } from "react-redux";
+import {
+  selectSetsByExerciseId,
+  setUserWorkoutSetsByExerciseId,
+} from "../store/slices/userWorkoutsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const ExerciseCard = ({ name, info, exerciseId }) => {
-  console.log("exerciseid from ExerciseCard", exerciseId);
-  const [sets, setSets] = useState([...info] || []);
+const ExerciseCard = ({ name, exerciseId }) => {
+  const setsFromStore = useSelector((state) =>
+    selectSetsByExerciseId(state, exerciseId)
+  );
+
+  const [sets, setSets] = useState(setsFromStore || []);
 
   const dispatch = useDispatch();
+
   const removeSet = (setOrder) => {
     const updatedSets = sets.filter((set) => set.set_order !== setOrder);
     setSets([...updatedSets]);
@@ -34,7 +41,6 @@ const ExerciseCard = ({ name, info, exerciseId }) => {
     dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
   };
 
-  console.log("sets from ExerciseCard: ", sets);
   return (
     <View style={styles.item}>
       <Text style={styles.text}>{name}</Text>

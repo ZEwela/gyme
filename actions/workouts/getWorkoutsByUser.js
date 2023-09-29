@@ -1,5 +1,5 @@
 import { auth, db } from "../../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
 export function getWorkoutsByUser() {
   return new Promise(async (resolve, reject) => {
@@ -7,7 +7,8 @@ export function getWorkoutsByUser() {
       const user = auth.currentUser;
       const workoutsCollection = query(
         collection(db, "workouts"),
-        where("user_id", "==", user.uid)
+        where("user_id", "==", user.uid),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(workoutsCollection);
       const workouts = [];

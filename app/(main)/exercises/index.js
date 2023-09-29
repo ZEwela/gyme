@@ -1,6 +1,5 @@
 import { ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
 
 import Item from "../../../components/Item";
 import { getExercises } from "../../../actions/getExercises";
@@ -8,30 +7,30 @@ import { useDispatch } from "react-redux";
 import { setExercises as setExercisesInStore } from "../../../store/slices/exercisesSlice";
 
 const Exercises = () => {
-  const { workoutName } = useLocalSearchParams();
   const dispatch = useDispatch();
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    // getting exercises from db
+    const fetchData = async () => {
       try {
         const data = await getExercises();
         setExercises([...data]);
+        // setting exercises in redux store
         dispatch(setExercisesInStore(data));
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching exercises: ", error);
         alert(
           "Sorry something went wrong while trying to display list of exercises, please try again later"
         );
       }
-    }
+    };
     fetchData();
   }, []);
 
   if (loading) {
-    return <ActivityIndicator size="large" />;
+    return <ActivityIndicator color={"green"} />;
   }
 
   return (
@@ -44,7 +43,7 @@ const Exercises = () => {
             <Item
               title={item.exercise_name}
               pathname={`exercises/${item.exercise_name}`}
-              params={{ workoutName: workoutName }}
+              params={{ exerciseName: item.exercise_name }}
             />
           )}
         />
