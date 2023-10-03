@@ -10,13 +10,13 @@ const createExercise = () => {
   const [technique, setTechnique] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleCreateExercise = () => {
+  const handleCreateExercise = async () => {
     create(name, technique, description);
     setName("");
     setTechnique("");
     setDescription("");
 
-    router.replace("/(main)/exercises");
+    router.push("/(main)/exercises");
   };
 
   return (

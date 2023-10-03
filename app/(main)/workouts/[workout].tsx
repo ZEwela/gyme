@@ -22,6 +22,8 @@ import {
   resetUserWorkout,
 } from "../../../store/slices/userWorkoutsSlice";
 import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
+import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
+import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
 
 const Workout = () => {
   // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
@@ -42,7 +44,6 @@ const Workout = () => {
   const exercises = workout?.exercises_list;
 
   useEffect(() => {
-    console.log("Workout render");
     if (workout && workoutId === workout.workout_id) {
       return;
     } else {
@@ -67,26 +68,88 @@ const Workout = () => {
     }
   };
 
+  const deleteWorkout = async () => {
+    try {
+      const workoutDeleted = await deleteWorkoutInDB(workout.workout_id);
+      alert(workoutDeleted);
+      dispatch(resetUserWorkout());
+      router.replace("/(main)/workouts");
+    } catch (error) {
+      alert(
+        "Sorry, something went wrong while deleting your workout. Please try again later."
+      );
+    }
+  };
+
+  const updateWorkout = async () => {
+    console.log(workout);
+    try {
+      const workoutUpdated = await updateWorkoutInDB(workout);
+      alert(workoutUpdated);
+      dispatch(resetUserWorkout());
+      router.replace("/(main)/workouts");
+    } catch (error) {
+      alert(
+        "Sorry, something went wrong while updating your workout. Please try again later."
+      );
+    }
+  };
+
+  const handleSaving = () => {
+    if (workout.workout_id === workout.workout_name) {
+      saveWorkout();
+    } else {
+      Alert.alert(
+        null,
+        "Would you like to create a new workout record or edit existing workout record?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {
+              return;
+            },
+          },
+          { text: "Edit", onPress: () => updateWorkout() },
+          { text: "Create", onPress: () => saveWorkout() },
+        ]
+      );
+    }
+  };
+  const handleDeleteingWorkout = () => {
+    Alert.alert(
+      null,
+      "Warning: You are about to permanently delete this workout. Please, confirm, would you like to delete this record?",
+      [
+        { text: "Delete", onPress: () => deleteWorkout() },
+        {
+          text: "Cancel",
+          onPress: () => {
+            return;
+          },
+        },
+      ]
+    );
+  };
+
   const handleGoBack = () => {
     Alert.alert(
       // title
       null,
       // body
-      "Would you like to save your workout?",
+      "Warning: Your changes will not be saved. Would you like to continue anyway?",
       [
         {
-          text: "Yes",
+          text: "Continue, without saving",
           onPress: () => {
-            saveWorkout();
+            dispatch(resetUserWorkout());
+            router.replace("/(main)/workouts");
           },
         },
         {
           text: "No",
           onPress: () => {
-            dispatch(resetUserWorkout());
-            router.replace("/(main)/workouts");
+            return;
           },
-          style: "cancel",
         },
       ],
       { cancelable: false }
@@ -110,6 +173,12 @@ const Workout = () => {
           ),
           headerRight: () => (
             <View style={styles.row}>
+              {workout.workout_id !== workout.workout_name && (
+                <Pressable onPress={handleDeleteingWorkout}>
+                  <Ionicons name="trash-outline" size={32} color="white" />
+                </Pressable>
+              )}
+
               <Pressable onPress={() => setShowAddNote(true)}>
                 <SimpleLineIcons name="note" size={28} color="white" />
               </Pressable>
@@ -119,7 +188,8 @@ const Workout = () => {
               <Pressable onPress={() => setShow(true)}>
                 <Ionicons name="person-add-outline" size={30} color="white" />
               </Pressable>
-              <Pressable onPress={saveWorkout}>
+
+              <Pressable onPress={handleSaving}>
                 <Text style={styles.doneBtn}>SAVE</Text>
               </Pressable>
             </View>
@@ -137,12 +207,7 @@ const Workout = () => {
         />
       )}
       {showAddNote && (
-        <AddWorkoutNote
-          workout={workout.workout_name}
-          user={user}
-          setShow={setShowAddNote}
-          show={showAddNote}
-        />
+        <AddWorkoutNote setShow={setShowAddNote} show={showAddNote} />
       )}
       {exercises?.length && (
         <FlatList

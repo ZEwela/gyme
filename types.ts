@@ -7,6 +7,8 @@ export type Workout = {
   workout_id: string;
   sets: SetRecord[];
   workout_name: string;
+  note: string;
+  updated_at: string | Timestamp;
 };
 
 export type ExercisesListElement = {

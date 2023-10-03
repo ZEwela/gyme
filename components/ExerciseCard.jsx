@@ -1,17 +1,17 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import SetItem from "./SetItem";
 import AddSet from "./AddSet";
 import {
   selectSetsByExerciseId,
   setUserWorkoutSetsByExerciseId,
 } from "../store/slices/userWorkoutsSlice";
-import { useDispatch, useSelector } from "react-redux";
 
 const ExerciseCard = ({ name, exerciseId }) => {
   const setsFromStore = useSelector((state) =>
-    selectSetsByExerciseId(state, exerciseId)
+    selectSetsByExerciseId(state)(exerciseId)
   );
 
   const [sets, setSets] = useState(setsFromStore || []);
@@ -47,7 +47,7 @@ const ExerciseCard = ({ name, exerciseId }) => {
 
       <FlatList
         data={sets}
-        keyExtractor={(item) => item.set_order}
+        keyExtractor={(item) => item.set_order.toString()}
         renderItem={({ item }) => (
           <SetItem
             previousReps={item.reps}
@@ -85,6 +85,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#8EAB73",
     margin: 5,
     padding: 10,
-    width: "300",
+    width: "300px",
   },
 });

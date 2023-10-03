@@ -20,6 +20,7 @@ export function getWorkoutsByUser() {
       resolve(workouts);
     } catch (error) {
       reject(error);
+      console.error("Error fetching workouts:", error);
     }
   });
 }

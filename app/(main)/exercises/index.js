@@ -2,31 +2,44 @@ import { ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import Item from "../../../components/Item";
-import { getExercises } from "../../../actions/getExercises";
-import { useDispatch } from "react-redux";
-import { setExercises as setExercisesInStore } from "../../../store/slices/exercisesSlice";
+import {
+  getExercises,
+  getExercisesRealtime,
+} from "../../../actions/getExercises";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectExercises,
+  setExercises as setExercisesInStore,
+} from "../../../store/slices/exercisesSlice";
 
 const Exercises = () => {
   const dispatch = useDispatch();
-  const [exercises, setExercises] = useState([]);
+  const exercisesFromStore = useSelector(selectExercises);
+  const [exercises, setExercises] = useState(exercisesFromStore || []);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // getting exercises from db
-    const fetchData = async () => {
-      try {
-        const data = await getExercises();
-        setExercises([...data]);
-        // setting exercises in redux store
-        dispatch(setExercisesInStore(data));
+    // Subscribe to real-time updates and provide a callback to handle changes.
+    const unsubscribe = getExercisesRealtime(
+      (updatedExercises) => {
+        // Update the Redux store with the updated exercises.
+        dispatch(setExercisesInStore(updatedExercises));
+
+        // Set the local state with the updated exercises.
+        setExercises(updatedExercises);
+
         setLoading(false);
-      } catch (error) {
+      },
+      (error) => {
+        setLoading(false);
         alert(
-          "Sorry something went wrong while trying to display list of exercises, please try again later"
+          "Something went wrong while trying to display a list of exercises, please try again later"
         );
       }
-    };
-    fetchData();
+    );
+
+    // Clean up the subscription when the component unmounts.
+    return () => unsubscribe();
   }, []);
 
   if (loading) {

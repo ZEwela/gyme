@@ -19,28 +19,57 @@ const Workouts: React.FC<WorkoutsProps> = () => {
       try {
         const workouts = await getWorkoutsByUser();
 
-        const workoutsWithCreatedAtAsString = workouts.map(
-          (workout: Workout) => {
+        const workoutsWithDatesAsStrings = workouts.map((workout: Workout) => {
+          // Convert timestamps from database to strings before adding to redux store to avoid a non-serializable value error
+          if (workout.updated_at) {
+            if (
+              typeof workout.created_at === "string" &&
+              typeof workout.updated_at === "string"
+            ) {
+              return workout;
+            } else {
+              const created_at =
+                typeof workout.created_at === "string"
+                  ? workout.created_at
+                  : workout.created_at.toDate().toISOString();
+
+              const updated_at =
+                typeof workout.updated_at === "string"
+                  ? workout.updated_at
+                  : workout.updated_at.toDate().toISOString();
+
+              return {
+                ...workout,
+                created_at,
+                updated_at,
+              };
+            }
+          } else {
             if (typeof workout.created_at === "string") {
               return workout;
             } else {
+              const created_at =
+                typeof workout.created_at === "string"
+                  ? workout.created_at
+                  : workout.created_at.toDate().toISOString();
+
               return {
                 ...workout,
-                created_at: workout.created_at.toDate().toISOString(),
+                created_at,
               };
             }
           }
-        );
+        });
 
-        setWorkouts(workoutsWithCreatedAtAsString);
-        dispatch(setUserWorkouts(workoutsWithCreatedAtAsString));
+        setWorkouts(workoutsWithDatesAsStrings);
+        dispatch(setUserWorkouts(workoutsWithDatesAsStrings));
 
         setLoading(false);
       } catch (error) {
         alert(
           "Sorry something went wrong while trying to display list of workouts, please try again later"
         );
-        console.error("Error fetching workouts:", error);
+        setLoading(false);
       }
     }
 

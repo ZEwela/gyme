@@ -6,21 +6,23 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectWorkout,
+  setUserWorkoutNote,
+} from "../store/slices/userWorkoutsSlice";
 
-const AddWorkoutNote = ({ workout, user, show, setShow }) => {
+const AddWorkoutNote = ({ show, setShow }) => {
+  const dispatch = useDispatch();
+  const workout = useSelector(selectWorkout);
+  const [note, setNote] = useState(workout.note || "");
+
   const onClose = () => {
     setShow(!show);
-    // set note to database
+    dispatch(setUserWorkoutNote(note));
   };
-  const [note, setNote] = useState("");
-  useEffect(() => {
-    const note = user.workoutsHistory.find(
-      ({ workoutName }) => workoutName === workout
-    ).note;
-    setNote(note);
-  }, [workout]);
 
   return (
     <View>

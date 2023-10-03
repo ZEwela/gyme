@@ -18,6 +18,7 @@ export const saveWorkout = (workout) => {
         created_at: timeStamp,
         user_id: user.uid,
         sets: workout.sets || null,
+        note: workout.note || null,
       };
 
       await setDoc(newWorkoutRef, workoutData);

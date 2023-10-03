@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const userWorkoutsSlice = createSlice({
   name: "userWorkouts",
@@ -28,6 +29,12 @@ const userWorkoutsSlice = createSlice({
       );
       state.userWorkout = foundWorkout || null;
     },
+    setUserWorkoutNote(state, action) {
+      state.userWorkout = {
+        ...state.userWorkout,
+        note: action.payload,
+      };
+    },
     setUserWorkoutSetsByExerciseId(state, action) {
       const { exerciseId, updatedSets } = action.payload;
       const updatedSetsObject = { ...(state.userWorkout?.sets || {}) };
@@ -53,13 +60,12 @@ export const selectUserWorkouts = (state) => state.userWorkouts.userWorkouts;
 export const selectWorkoutExercisesList = (state) =>
   state.userWorkouts.userWorkout?.exercises_list;
 export const selectWorkout = (state) => state.userWorkouts.userWorkout;
-export const selectSetsByExerciseId = (state, exerciseId) => {
-  if (state.userWorkouts.userWorkout && state.userWorkouts.userWorkout.sets) {
-    return state.userWorkouts.userWorkout.sets[exerciseId] || [];
-  } else {
-    return [];
+export const selectSetsByExerciseId = createSelector(
+  [selectWorkout],
+  (userWorkout) => (exerciseId) => {
+    return userWorkout.sets ? userWorkout.sets[exerciseId] : null;
   }
-};
+);
 
 export const {
   setUserWorkouts,
@@ -70,5 +76,6 @@ export const {
   resetUserWorkout,
   addUserWorkoutToWorkouts,
   addExerciseToUserWorkout,
+  setUserWorkoutNote,
 } = userWorkoutsSlice.actions;
 export default userWorkoutsSlice.reducer;
