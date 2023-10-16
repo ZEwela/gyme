@@ -53,6 +53,15 @@ const userWorkoutsSlice = createSlice({
         ],
       };
     },
+    removeExerciseFromUserWorkout(state, action) {
+      const filteredExercises = state.userWorkout.exercises_list.filter(
+        ({ exercise_id }) => exercise_id !== action.payload
+      );
+      state.userWorkout = {
+        ...state.userWorkout,
+        exercises_list: [...filteredExercises],
+      };
+    },
   },
 });
 
@@ -76,6 +85,7 @@ export const {
   resetUserWorkout,
   addUserWorkoutToWorkouts,
   addExerciseToUserWorkout,
+  removeExerciseFromUserWorkout,
   setUserWorkoutNote,
 } = userWorkoutsSlice.actions;
 export default userWorkoutsSlice.reducer;

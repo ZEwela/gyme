@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import Item from "../../../components/Item";
+import React, { useState } from "react";
 import {
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -9,9 +9,15 @@ import {
   View,
 } from "react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import { auth } from "../../../firebase";
+import { Ionicons } from "@expo/vector-icons";
+
 import { useDispatch } from "react-redux";
+import { auth } from "../../../firebase";
+
+import AddButton from "../../../components/AddButton";
 import { addUserWorkoutToWorkouts } from "../../../store/slices/userWorkoutsSlice";
+import { useCheckedExercises } from "../../../contexts/CheckedExercisesContext";
+import ExerciseListItem from "../../../components/ExerciseListItem";
 
 const createWorkout = () => {
   const dispatch = useDispatch();
@@ -20,22 +26,9 @@ const createWorkout = () => {
   const { exerciseId, exerciseName } = useLocalSearchParams();
 
   const [workoutName, setWorkoutName] = useState("");
-  const [exercises, setExercises] = useState([]);
 
-  useEffect(() => {
-    // check if choosen exercise is not already in exercises list
-    const containsExercise = exercises.some(
-      (exercise) => exercise.exerciseName === exerciseName
-    );
-
-    // add exercise to exercises when is not already in it
-    if (exerciseName && !containsExercise) {
-      setExercises([
-        ...exercises,
-        { exercise_id: exerciseId, exercise_name: exerciseName },
-      ]);
-    }
-  }, [exerciseName]);
+  const { checkedExercises, setCheckedExercises } = useCheckedExercises();
+  console.log("from createworkout, checkedexercises: ", checkedExercises);
 
   const createWorkout = () => {
     // check if user provided workout name
@@ -48,7 +41,7 @@ const createWorkout = () => {
     const workoutData = {
       workout_id: workoutName.toLowerCase(),
       workout_name: workoutName.toLowerCase(),
-      exercises_list: exercises,
+      exercises_list: checkedExercises,
       created_at: new Date().toISOString(),
       user_id: auth.currentUser.uid,
     };
@@ -56,6 +49,7 @@ const createWorkout = () => {
     // add new workout to workouts list in redux store
     dispatch(addUserWorkoutToWorkouts(workoutData));
 
+    setCheckedExercises([]);
     // take user to workout page
     router.replace({
       pathname: "workouts/[workout]",
@@ -66,10 +60,41 @@ const createWorkout = () => {
     });
   };
 
+  const handleGoBack = () => {
+    Alert.alert(
+      // title
+      null,
+      // body
+      "Warning: Your changes will not be saved. Would you like to continue anyway?",
+      [
+        {
+          text: "Continue, without saving",
+          onPress: () => {
+            setCheckedExercises([]);
+            router.back();
+          },
+        },
+        {
+          text: "No",
+          onPress: () => {
+            return;
+          },
+        },
+      ],
+      { cancelable: false }
+      //clicking out side of alert will not cancel
+    );
+  };
+
   return (
     <>
       <Stack.Screen
         options={{
+          headerLeft: () => (
+            <Pressable style={{ marginRight: 10 }} onPress={handleGoBack}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </Pressable>
+          ),
           headerRight: () => (
             <Pressable onPress={createWorkout}>
               <Text style={styles.doneBtn}>Done</Text>
@@ -87,13 +112,13 @@ const createWorkout = () => {
         />
       </View>
 
-      <Item pathname={"/(main)/exercises"} title={"Add Exercise"} />
+      <AddButton pathname={"/(main)/exercises"} title={"Add Exercises"} />
 
-      {exercises.length > 0 && (
+      {checkedExercises.length > 0 && (
         <FlatList
-          data={exercises}
+          data={checkedExercises}
           renderItem={({ item }) => (
-            <Item
+            <ExerciseListItem
               title={item.exercise_name}
               pathname={`/(main)/exercises/${item.exercise_name}`}
             />

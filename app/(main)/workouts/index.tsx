@@ -6,6 +6,7 @@ import Item from "../../../components/Item";
 import { getWorkoutsByUser } from "../../../actions/workouts/getWorkoutsByUser";
 import { setUserWorkouts } from "../../../store/slices/userWorkoutsSlice";
 import { Workout } from "../../../types";
+import AddButton from "../../../components/AddButton";
 
 interface WorkoutsProps {}
 
@@ -82,7 +83,7 @@ const Workouts: React.FC<WorkoutsProps> = () => {
 
   return (
     <>
-      <Item
+      <AddButton
         pathname={"workouts/createWorkout"}
         title={"Create workout"}
         params={{}}

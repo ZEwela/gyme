@@ -50,6 +50,8 @@ const SignUp = () => {
         // Handle errors here
         if (error.message.includes("email-already-in-use")) {
           alert("Email already in use");
+        } else if (error.message.includes("weak-password")) {
+          alert("Password should be at least 6 characters");
         }
         console.error("Error creating user:", error);
       }

@@ -101,7 +101,7 @@ const Workout = () => {
     } else {
       Alert.alert(
         null,
-        "Would you like to create a new workout record or edit existing workout record?",
+        "Are you saving your changes or adding a new workout?",
         [
           {
             text: "Cancel",
@@ -109,8 +109,8 @@ const Workout = () => {
               return;
             },
           },
-          { text: "Edit", onPress: () => updateWorkout() },
-          { text: "Create", onPress: () => saveWorkout() },
+          { text: "Save changes", onPress: () => updateWorkout() },
+          { text: "Save as a new workout", onPress: () => saveWorkout() },
         ]
       );
     }
@@ -165,9 +165,13 @@ const Workout = () => {
     <>
       <Stack.Screen
         options={{
-          headerTitle: `${workout.workout_name.toUpperCase()}`,
+          headerTitle: `${
+            workout.workout_name.length > 10
+              ? workout.workout_name.toUpperCase().slice(0, 10).trim() + "..."
+              : workout.workout_name.toUpperCase()
+          }`,
           headerLeft: () => (
-            <Pressable style={{ marginRight: 31 }} onPress={handleGoBack}>
+            <Pressable style={{ marginRight: 10 }} onPress={handleGoBack}>
               <Ionicons name="arrow-back" size={24} color="white" />
             </Pressable>
           ),
@@ -182,7 +186,7 @@ const Workout = () => {
               <Pressable onPress={() => setShowAddNote(true)}>
                 <SimpleLineIcons name="note" size={28} color="white" />
               </Pressable>
-              <Link replace href="/(main)/exercises/">
+              <Link href="/(main)/exercises/">
                 <MaterialIcons name="fitness-center" size={30} color="white" />
               </Link>
               <Pressable onPress={() => setShow(true)}>
@@ -209,7 +213,7 @@ const Workout = () => {
       {showAddNote && (
         <AddWorkoutNote setShow={setShowAddNote} show={showAddNote} />
       )}
-      {exercises?.length && (
+      {exercises?.length > 0 && (
         <FlatList
           data={exercises}
           renderItem={({ item }) => (

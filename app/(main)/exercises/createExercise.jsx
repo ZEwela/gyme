@@ -16,7 +16,7 @@ const createExercise = () => {
     setTechnique("");
     setDescription("");
 
-    router.push("/(main)/exercises");
+    router.back();
   };
 
   return (
@@ -53,7 +53,7 @@ const createExercise = () => {
           placeholder="description"
           onChangeText={setDescription}
           multiline
-          maxLength={250}
+          maxLength={35}
           numberOfLines={2}
         />
       </View>

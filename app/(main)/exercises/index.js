@@ -1,16 +1,14 @@
 import { ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-
-import Item from "../../../components/Item";
-import {
-  getExercises,
-  getExercisesRealtime,
-} from "../../../actions/getExercises";
 import { useDispatch, useSelector } from "react-redux";
+
+import { getExercisesRealtime } from "../../../actions/getExercises";
 import {
   selectExercises,
   setExercises as setExercisesInStore,
 } from "../../../store/slices/exercisesSlice";
+import AddButton from "../../../components/AddButton";
+import ExerciseListItem from "../../../components/ExerciseListItem";
 
 const Exercises = () => {
   const dispatch = useDispatch();
@@ -48,12 +46,15 @@ const Exercises = () => {
 
   return (
     <>
-      <Item pathname={"exercises/createExercise"} title={"Create Exercise"} />
+      <AddButton
+        pathname={"exercises/createExercise"}
+        title={"Create New Exercise"}
+      />
       {exercises.length > 0 && (
         <FlatList
           data={exercises}
           renderItem={({ item }) => (
-            <Item
+            <ExerciseListItem
               title={item.exercise_name}
               pathname={`exercises/${item.exercise_name}`}
               params={{ exerciseName: item.exercise_name }}
