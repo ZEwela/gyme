@@ -33,7 +33,7 @@ const ExerciseListItem = ({ params, title, pathname }) => {
     setChecked(!isChecked);
 
     if (workout) {
-      // add or remove exercise from workout
+      // add or remove an exercise from the workout
       if (!isChecked) {
         dispatch(
           addExerciseToUserWorkout({
@@ -61,7 +61,7 @@ const ExerciseListItem = ({ params, title, pathname }) => {
           ]
         );
       }
-      // add or remove exercise to checkedExercises context
+      // add or remove an exercise from the checkedExercises context
     } else {
       if (!isChecked) {
         setCheckedExercises([

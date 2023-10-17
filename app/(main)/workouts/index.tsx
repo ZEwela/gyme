@@ -1,8 +1,14 @@
-import { ActivityIndicator, FlatList } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import Item from "../../../components/Item";
+import WorkoutListItem from "../../../components/WorkoutListItem";
 import { getWorkoutsByUser } from "../../../actions/workouts/getWorkoutsByUser";
 import { setUserWorkouts } from "../../../store/slices/userWorkoutsSlice";
 import { Workout } from "../../../types";
@@ -21,7 +27,10 @@ const Workouts: React.FC<WorkoutsProps> = () => {
         const workouts = await getWorkoutsByUser();
 
         const workoutsWithDatesAsStrings = workouts.map((workout: Workout) => {
-          // Convert timestamps from database to strings before adding to redux store to avoid a non-serializable value error
+          /*
+          Convert timestamps, coming from database, to strings before adding it to redux store 
+          to avoid a non-serializable value error 
+          */
           if (workout.updated_at) {
             if (
               typeof workout.created_at === "string" &&
@@ -83,34 +92,61 @@ const Workouts: React.FC<WorkoutsProps> = () => {
 
   return (
     <>
-      <AddButton
-        pathname={"workouts/createWorkout"}
-        title={"Create workout"}
-        params={{}}
-      />
-
-      {workouts?.length > 0 && (
-        <FlatList
-          data={workouts}
-          renderItem={({ item }) => (
-            <Item
-              title={`${item.workout_name} / ${
-                typeof item.created_at === "string"
-                  ? item.created_at.slice(0, 10)
-                  : null
-              }`}
-              pathname={`workouts/${item.workout_id}`}
-              params={{
-                workoutName: item.workout_name,
-                workoutId: item.workout_id,
-              }}
-            />
-          )}
-          keyExtractor={(item) => item.workout_id}
+      <View style={styles.createWorkoutBtn}>
+        <AddButton
+          pathname={"workouts/createWorkout"}
+          title={"Fresh start"}
+          params={{}}
         />
+      </View>
+      {workouts?.length > 0 && (
+        <>
+          <View style={styles.textContainer}>
+            <Text style={styles.textFirst}> or </Text>
+            <Text style={styles.textSecond}> fitness flashback ? </Text>
+          </View>
+          <FlatList
+            data={workouts}
+            renderItem={({ item, index }) => (
+              <WorkoutListItem
+                title={`${item.workout_name} / ${
+                  typeof item.created_at === "string"
+                    ? item.created_at.slice(0, 10)
+                    : null
+                }`}
+                pathname={`workouts/${item.workout_id}`}
+                params={{
+                  workoutName: item.workout_name,
+                  workoutId: item.workout_id,
+                }}
+              />
+            )}
+            keyExtractor={(item) => item.workout_id}
+          />
+        </>
       )}
     </>
   );
 };
 
 export default Workouts;
+
+const styles = StyleSheet.create({
+  createWorkoutBtn: {
+    marginTop: 50,
+  },
+  textContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 10,
+    marginBottom: 20,
+  },
+  textFirst: {
+    fontSize: 20,
+  },
+  textSecond: {
+    fontSize: 25,
+    color: "#8CAB73",
+    fontWeight: "bold",
+  },
+});

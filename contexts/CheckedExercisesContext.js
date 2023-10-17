@@ -1,7 +1,6 @@
-// CheckedExercisesContext.js
 import React, { createContext, useContext, useState } from "react";
 
-const CheckedExercisesContext = createContext();
+const CheckedExercisesContext = createContext(null);
 
 export const CheckedExercisesProvider = ({ children }) => {
   const [checkedExercises, setCheckedExercises] = useState([]);

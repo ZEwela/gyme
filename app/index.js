@@ -1,10 +1,8 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import {  router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
-import { auth, db, getAuth } from "../firebase";
-import { onValue, ref } from "firebase/database";
+import { auth, db } from "../firebase";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useLayoutEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -43,12 +41,6 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      {/* <Link href="/users/login" style={styles.main}>
-        <Text style={styles.title}>
-          Pick
-          <AntDesign name="caretright" size={44} color="green" /> workout
-        </Text>
-      </Link> */}
       <FontAwesome5 name="door-open" size={90} color="green" />
       <ActivityIndicator size={"large"} color="green" />
     </View>

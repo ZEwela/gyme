@@ -22,13 +22,9 @@ import ExerciseListItem from "../../../components/ExerciseListItem";
 const createWorkout = () => {
   const dispatch = useDispatch();
 
-  // when user comes from /(main)/exercises/[exerciseName]
-  const { exerciseId, exerciseName } = useLocalSearchParams();
-
   const [workoutName, setWorkoutName] = useState("");
 
   const { checkedExercises, setCheckedExercises } = useCheckedExercises();
-  console.log("from createworkout, checkedexercises: ", checkedExercises);
 
   const createWorkout = () => {
     // check if user provided workout name
@@ -61,29 +57,33 @@ const createWorkout = () => {
   };
 
   const handleGoBack = () => {
-    Alert.alert(
-      // title
-      null,
-      // body
-      "Warning: Your changes will not be saved. Would you like to continue anyway?",
-      [
-        {
-          text: "Continue, without saving",
-          onPress: () => {
-            setCheckedExercises([]);
-            router.back();
+    if (!workoutName.length && !checkedExercises.length) {
+      router.back();
+    } else {
+      Alert.alert(
+        // title
+        null,
+        // body
+        "Warning: Your changes will not be saved. Would you like to continue anyway?",
+        [
+          {
+            text: "Continue, without saving",
+            onPress: () => {
+              setCheckedExercises([]);
+              router.back();
+            },
           },
-        },
-        {
-          text: "No",
-          onPress: () => {
-            return;
+          {
+            text: "No",
+            onPress: () => {
+              return;
+            },
           },
-        },
-      ],
-      { cancelable: false }
-      //clicking out side of alert will not cancel
-    );
+        ],
+        { cancelable: false }
+        //clicking out side of alert will not cancel
+      );
+    }
   };
 
   return (
@@ -109,6 +109,7 @@ const createWorkout = () => {
           value={workoutName}
           placeholder="workout name"
           onChangeText={setWorkoutName}
+          maxLength={35}
         />
       </View>
 
