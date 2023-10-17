@@ -14,10 +14,12 @@ export default function UsersLayout() {
         },
       }}
     >
-      <Stack.Screen
-        name="index"
+      {/* <Stack.Screen
+        name="users"
         options={{ headerTitle: "Users" }}
-      ></Stack.Screen>
+      ></Stack.Screen> */}
+      {/* <Stack.Screen name="[userName]"></Stack.Screen> */}
+      <Stack.Screen name="profileMain"></Stack.Screen>
       <Stack.Screen
         name="login"
         options={{ headerShown: false }}
@@ -26,7 +28,6 @@ export default function UsersLayout() {
         name="signUp"
         options={{ headerShown: false }}
       ></Stack.Screen>
-      <Stack.Screen name="[userName]"></Stack.Screen>
     </Stack>
   );
 }

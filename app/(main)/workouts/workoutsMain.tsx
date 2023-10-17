@@ -95,7 +95,7 @@ const Workouts: React.FC<WorkoutsProps> = () => {
       <View style={styles.createWorkoutBtn}>
         <AddButton
           pathname={"workouts/createWorkout"}
-          title={"Fresh start"}
+          title={"Start a new workout"}
           params={{}}
         />
       </View>
@@ -103,7 +103,7 @@ const Workouts: React.FC<WorkoutsProps> = () => {
         <>
           <View style={styles.textContainer}>
             <Text style={styles.textFirst}> or </Text>
-            <Text style={styles.textSecond}> fitness flashback ? </Text>
+            <Text style={styles.textSecond}> redo one ? </Text>
           </View>
           <FlatList
             data={workouts}

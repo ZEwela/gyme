@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import { Stack, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useDispatch } from "react-redux";
@@ -74,7 +74,7 @@ const createWorkout = () => {
             },
           },
           {
-            text: "No",
+            text: "Cancel",
             onPress: () => {
               return;
             },
@@ -97,13 +97,13 @@ const createWorkout = () => {
           ),
           headerRight: () => (
             <Pressable onPress={createWorkout}>
-              <Text style={styles.doneBtn}>Done</Text>
+              <Text style={styles.doneBtn}>Continue</Text>
             </Pressable>
           ),
         }}
       />
       <View style={styles.container}>
-        <Text style={styles.text}>Workout name: </Text>
+        <Text style={styles.text}>Name your workout: </Text>
         <TextInput
           style={styles.input}
           value={workoutName}
@@ -113,7 +113,10 @@ const createWorkout = () => {
         />
       </View>
 
-      <AddButton pathname={"/(main)/exercises"} title={"Add Exercises"} />
+      <AddButton
+        pathname={"/(main)/exercises/exercisesMain"}
+        title={"Add Exercises"}
+      />
 
       {checkedExercises.length > 0 && (
         <FlatList
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   text: {
-    fontSize: 15,
+    fontSize: 18,
   },
   input: {
     padding: 5,

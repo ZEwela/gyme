@@ -60,7 +60,7 @@ const Workout = () => {
       const workoutSaved = await save(workout);
       alert(workoutSaved);
       dispatch(resetUserWorkout());
-      router.replace("/(main)/workouts");
+      router.replace("/(main)/workouts/workoutsMain");
     } catch (error) {
       alert(
         "Sorry, something went wrong while saving your workout. Please try again later."
@@ -73,7 +73,7 @@ const Workout = () => {
       const workoutDeleted = await deleteWorkoutInDB(workout.workout_id);
       alert(workoutDeleted);
       dispatch(resetUserWorkout());
-      router.replace("/(main)/workouts");
+      router.replace("/(main)/workouts/workoutsMain");
     } catch (error) {
       alert(
         "Sorry, something went wrong while deleting your workout. Please try again later."
@@ -87,7 +87,7 @@ const Workout = () => {
       const workoutUpdated = await updateWorkoutInDB(workout);
       alert(workoutUpdated);
       dispatch(resetUserWorkout());
-      router.replace("/(main)/workouts");
+      router.replace("/(main)/workouts/workoutsMain");
     } catch (error) {
       alert(
         "Sorry, something went wrong while updating your workout. Please try again later."
@@ -142,7 +142,7 @@ const Workout = () => {
           text: "Continue, without saving",
           onPress: () => {
             dispatch(resetUserWorkout());
-            router.replace("/(main)/workouts");
+            router.back();
           },
         },
         {
@@ -167,7 +167,7 @@ const Workout = () => {
         options={{
           headerTitle: `${
             workout.workout_name.length > 10
-              ? workout.workout_name.toUpperCase().slice(0, 10).trim() + "..."
+              ? workout.workout_name.toUpperCase().slice(0, 8).trim() + "..."
               : workout.workout_name.toUpperCase()
           }`,
           headerLeft: () => (
@@ -186,7 +186,7 @@ const Workout = () => {
               <Pressable onPress={() => setShowAddNote(true)}>
                 <SimpleLineIcons name="note" size={28} color="white" />
               </Pressable>
-              <Link href="/(main)/exercises/">
+              <Link href="/(main)/exercises/exercisesMain">
                 <MaterialIcons name="fitness-center" size={30} color="white" />
               </Link>
               <Pressable onPress={() => setShow(true)}>

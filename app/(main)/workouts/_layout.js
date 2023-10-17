@@ -14,7 +14,7 @@ export default function WorkoutsLayout() {
         },
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="workoutsMain" options={{ headerShown: false }} />
 
       <Stack.Screen
         name="addOthersToWorkout"
@@ -24,10 +24,7 @@ export default function WorkoutsLayout() {
         }}
       />
 
-      <Stack.Screen
-        name="createWorkout"
-        options={{ headerTitle: "Create workout" }}
-      />
+      <Stack.Screen name="createWorkout" options={{ headerTitle: "" }} />
 
       <Stack.Screen name="[workout]" />
 

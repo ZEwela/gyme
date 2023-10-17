@@ -16,18 +16,13 @@ import { useCheckedExercises } from "../contexts/CheckedExercisesContext";
 const ExerciseListItem = ({ params, title, pathname }) => {
   const dispatch = useDispatch();
   const { checkedExercises, setCheckedExercises } = useCheckedExercises();
+
   const workout = useSelector(selectWorkout);
   const exercise = useSelector((state) =>
     selectExerciseByExerciseName(state)(title)
   );
 
-  const [isChecked, setChecked] = useState(
-    false ||
-      checkedExercises.find(({ exercise_name }) => exercise_name === title) ||
-      workout?.exercises_list?.find(
-        ({ exercise_name }) => exercise_name === title
-      )
-  );
+  const [isChecked, setChecked] = useState(false);
 
   const handleToggleChecked = () => {
     setChecked(!isChecked);
@@ -76,9 +71,23 @@ const ExerciseListItem = ({ params, title, pathname }) => {
           ({ exercise_id }) => exercise_id !== exercise.exercise_id
         );
         setCheckedExercises(filteredCheckedExercises);
+        setChecked(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (
+      checkedExercises.find(({ exercise_name }) => exercise_name === title) ||
+      workout?.exercises_list?.find(
+        ({ exercise_name }) => exercise_name === title
+      )
+    ) {
+      setChecked(true);
+    } else {
+      setChecked(false);
+    }
+  }, [checkedExercises, workout]);
   return (
     <View style={styles.itemContainer}>
       <Link style={styles.item} href={{ pathname: pathname, params: params }}>
@@ -101,7 +110,7 @@ const ExerciseListItem = ({ params, title, pathname }) => {
   );
 };
 
-export default React.memo(ExerciseListItem);
+export default ExerciseListItem;
 
 const styles = StyleSheet.create({
   itemContainer: {

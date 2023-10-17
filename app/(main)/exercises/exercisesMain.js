@@ -1,6 +1,7 @@
-import { ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
 import { getExercisesRealtime } from "../../../actions/getExercises";
 import {
@@ -9,12 +10,17 @@ import {
 } from "../../../store/slices/exercisesSlice";
 import AddButton from "../../../components/AddButton";
 import ExerciseListItem from "../../../components/ExerciseListItem";
+import { Stack, router } from "expo-router";
+import { useCheckedExercises } from "../../../contexts/CheckedExercisesContext";
+import { selectWorkout } from "../../../store/slices/userWorkoutsSlice";
 
 const Exercises = () => {
   const dispatch = useDispatch();
   const exercisesFromStore = useSelector(selectExercises);
   const [exercises, setExercises] = useState(exercisesFromStore || []);
   const [loading, setLoading] = useState(true);
+  const { checkedExercises, setCheckedExercises } = useCheckedExercises();
+  const workout = useSelector(selectWorkout);
 
   useEffect(() => {
     // Subscribe to real-time updates and provide a callback to handle changes.
@@ -40,12 +46,35 @@ const Exercises = () => {
     return () => unsubscribe();
   }, []);
 
+  const handleGoBack = () => {
+    if (
+      checkedExercises.length > 0 ||
+      (checkedExercises.length === 0 && workout === null)
+    ) {
+      router.push("(main)/workouts/createWorkout");
+    } else {
+      router.push({
+        pathname: "(main)/workouts/[workout]",
+        params: { workout: workout.workout_id, workoutId: workout.workout_id },
+      });
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator color={"green"} />;
   }
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          headerLeft: () => (
+            <Pressable style={{ marginRight: 10 }} onPress={handleGoBack}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </Pressable>
+          ),
+        }}
+      />
       <AddButton
         pathname={"exercises/createExercise"}
         title={"Create New Exercise"}

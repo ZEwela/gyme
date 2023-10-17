@@ -1,19 +1,16 @@
 import { View } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import { users } from "../../../../data";
 import { FlatList } from "react-native-gesture-handler";
 import ExerciseCard from "../../../../components/ExerciseCard";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectSetsByExerciseId,
-  selectWorkout,
-} from "../../../../store/slices/userWorkoutsSlice";
+import { getAuth } from "firebase/auth";
 
 const Exercise = () => {
   const params = useLocalSearchParams();
-  const dispatch = useDispatch();
-
+  const auth = getAuth();
+  const user = auth.currentUser;
+  console.log(user);
   const { exerciseId, workoutMembers, workout } = params;
 
   // TODO: change when you will have store
@@ -22,20 +19,6 @@ const Exercise = () => {
   const members = users.filter((user) =>
     workoutMembersToArray.includes(user.id.toString())
   );
-
-  const lastExercise = (workouts) => {
-    // const lastWorkout = workouts.find(
-    //   ({ workoutName }) => workoutName === workout
-    // );
-    // if (lastWorkout) {
-    //   const lastExercise = lastWorkout.exercies.find(
-    //     ({ name }) => name === exercise
-    //   );
-    //   return lastExercise.data;
-    // }
-    return [];
-  };
-  useEffect(() => {}, []);
 
   return (
     <View>

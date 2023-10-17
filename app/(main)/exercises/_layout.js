@@ -15,7 +15,7 @@ export default function MainLayout() {
       }}
     >
       <Stack.Screen
-        name="index"
+        name="exercisesMain"
         options={{ headerTitle: "Exercises" }}
       ></Stack.Screen>
 
