@@ -16,7 +16,7 @@ export default function MainLayout() {
     >
       <Stack.Screen
         name="exercisesMain"
-        options={{ headerTitle: "Exercises" }}
+        options={{ headerTitle: "" }}
       ></Stack.Screen>
 
       <Stack.Screen

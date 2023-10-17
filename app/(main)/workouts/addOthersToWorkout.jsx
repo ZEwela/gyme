@@ -19,6 +19,7 @@ const AddOthersToWorkout = ({
   workoutName,
   setWorkoutMembers,
   workoutMembers,
+  setShowDrawer,
 }) => {
   const [membersData, setMembersData] = useState([]);
 
@@ -48,6 +49,7 @@ const AddOthersToWorkout = ({
   const handleClosing = () => {
     setWorkoutMembers([...members]);
     setShow(false);
+    setShowDrawer(false);
   };
 
   const isInMembers = (id) => {

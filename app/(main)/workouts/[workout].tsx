@@ -24,6 +24,7 @@ import {
 import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
 import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
 import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
+import Drawer from "../../../components/Drawer";
 
 const Workout = () => {
   // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
@@ -35,6 +36,7 @@ const Workout = () => {
 
   const [show, setShow] = useState<boolean>(false);
   const [showAddNote, setShowAddNote] = useState<boolean>(false);
+  const [showDrawer, setShowDrower] = useState<boolean>(false);
 
   // it needts to be change while friends will be fetched from db
   const [friends, setFriends] = useState([]);
@@ -82,7 +84,6 @@ const Workout = () => {
   };
 
   const updateWorkout = async () => {
-    console.log(workout);
     try {
       const workoutUpdated = await updateWorkoutInDB(workout);
       alert(workoutUpdated);
@@ -166,8 +167,8 @@ const Workout = () => {
       <Stack.Screen
         options={{
           headerTitle: `${
-            workout.workout_name.length > 10
-              ? workout.workout_name.toUpperCase().slice(0, 8).trim() + "..."
+            workout.workout_name.length > 15
+              ? workout.workout_name.toUpperCase().slice(0, 15).trim() + "..."
               : workout.workout_name.toUpperCase()
           }`,
           headerLeft: () => (
@@ -177,29 +178,32 @@ const Workout = () => {
           ),
           headerRight: () => (
             <View style={styles.row}>
-              {workout.workout_id !== workout.workout_name && (
-                <Pressable onPress={handleDeleteingWorkout}>
-                  <Ionicons name="trash-outline" size={32} color="white" />
-                </Pressable>
-              )}
-
-              <Pressable onPress={() => setShowAddNote(true)}>
-                <SimpleLineIcons name="note" size={28} color="white" />
-              </Pressable>
-              <Link href="/(main)/exercises/exercisesMain">
-                <MaterialIcons name="fitness-center" size={30} color="white" />
-              </Link>
-              <Pressable onPress={() => setShow(true)}>
-                <Ionicons name="person-add-outline" size={30} color="white" />
-              </Pressable>
-
               <Pressable onPress={handleSaving}>
                 <Text style={styles.doneBtn}>SAVE</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setShowDrower(!showDrawer);
+                }}
+              >
+                {showDrawer ? (
+                  <Ionicons name="close" size={32} color="white" />
+                ) : (
+                  <Ionicons name="menu-outline" size={32} color="white" />
+                )}
               </Pressable>
             </View>
           ),
         }}
       />
+      {showDrawer && (
+        <Drawer
+          handleDeleteingWorkout={handleDeleteingWorkout}
+          setShow={setShow}
+          setShowAddNote={setShowAddNote}
+          setShowDrawer={setShowDrower}
+        />
+      )}
       {show && (
         <AddOthersToWorkout
           show={show}
@@ -208,10 +212,15 @@ const Workout = () => {
           workoutName={workout.workout_name}
           setWorkoutMembers={setWorkoutMembers}
           workoutMembers={workoutMembers}
+          setShowDrawer={setShowDrower}
         />
       )}
       {showAddNote && (
-        <AddWorkoutNote setShow={setShowAddNote} show={showAddNote} />
+        <AddWorkoutNote
+          setShow={setShowAddNote}
+          show={showAddNote}
+          setShowDrawer={setShowDrower}
+        />
       )}
       {exercises?.length > 0 && (
         <FlatList

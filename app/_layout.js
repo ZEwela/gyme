@@ -31,6 +31,7 @@ export default function MainLayout() {
             headerTitleStyle: {
               fontWeight: "bold",
             },
+            tabBarHideOnKeyboard: true,
           }}
         >
           <Tabs.Screen
@@ -56,7 +57,11 @@ export default function MainLayout() {
                   size={size}
                 />
               ),
-              tabBarLabelStyle: { color: "green", fontSize: 15 },
+              tabBarLabelStyle: {
+                color: "green",
+                fontSize: 15,
+              },
+              tabBarHideOnKeyboard: true,
             }}
           />
           <Tabs.Screen

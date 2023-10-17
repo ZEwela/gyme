@@ -14,13 +14,14 @@ import {
   setUserWorkoutNote,
 } from "../store/slices/userWorkoutsSlice";
 
-const AddWorkoutNote = ({ show, setShow }) => {
+const AddWorkoutNote = ({ show, setShow, setShowDrawer }) => {
   const dispatch = useDispatch();
   const workout = useSelector(selectWorkout);
   const [note, setNote] = useState(workout.note || "");
 
   const onClose = () => {
     setShow(!show);
+    setShowDrawer(false);
     dispatch(setUserWorkoutNote(note));
   };
 
