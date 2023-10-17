@@ -1,18 +1,22 @@
 import { Stack } from "expo-router";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "../store/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useGlobalSearchParams, Slot } from "expo-router";
 import { Tabs } from "expo-router/tabs";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CheckedExercisesProvider } from "../contexts/CheckedExercisesContext";
 import { Text } from "react-native";
+import { selectUser } from "../store/slices/userSlice";
+import { getAuth } from "firebase/auth";
 
 export default function MainLayout() {
   const pathname = usePathname();
   const params = useGlobalSearchParams();
 
   // Track the location in your analytics provider here.
+  const user = getAuth().currentUser;
+
   useEffect(() => {
     console.log("Pathname and params from MainLayout: ", pathname, params);
   }, [pathname, params]);
@@ -22,6 +26,7 @@ export default function MainLayout() {
       <CheckedExercisesProvider>
         <Tabs
           screenOptions={{
+            tabBarStyle: user ? { display: "flex" } : { display: "none" },
             headerShown: false,
             headerStyle: {
               headerBackVisible: true,
@@ -38,6 +43,7 @@ export default function MainLayout() {
             name="index"
             options={{
               href: null,
+              tabBarStyle: { display: "none" },
             }}
           />
           <Tabs.Screen

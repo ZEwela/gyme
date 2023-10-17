@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import {  router } from "expo-router";
+import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import { auth, db } from "../firebase";
@@ -25,7 +25,7 @@ export default function Page() {
             const userData = userDoc.data();
             dispatch(setUser(userData));
             setTimeout(() => {
-              router.replace("workouts");
+              router.replace("(main)/workouts");
             }, 2000);
           }
         } catch (error) {
@@ -33,7 +33,7 @@ export default function Page() {
         }
       } else {
         setTimeout(() => {
-          router.replace("users/login");
+          router.replace("(main)/profile/login");
         }, 2000);
       }
     });

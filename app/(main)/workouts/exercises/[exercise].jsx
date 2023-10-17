@@ -8,9 +8,7 @@ import { getAuth } from "firebase/auth";
 
 const Exercise = () => {
   const params = useLocalSearchParams();
-  const auth = getAuth();
-  const user = auth.currentUser;
-  console.log(user);
+
   const { exerciseId, workoutMembers, workout } = params;
 
   // TODO: change when you will have store

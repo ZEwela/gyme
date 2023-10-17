@@ -11,8 +11,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { auth, db } from "../../../firebase";
 import UserInput from "../../../components/UserInput";
-import { router } from "expo-router";
-import { get, ref } from "firebase/database";
+import { Stack, Tabs, router } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../store/slices/userSlice";
@@ -31,8 +30,8 @@ const Login = () => {
       try {
         const userCred = await signInWithEmailAndPassword(
           auth,
-          email,
-          password
+          email.trim(),
+          password.trim()
         );
 
         if (userCred) {
@@ -42,7 +41,8 @@ const Login = () => {
           if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
             dispatch(setUser(userData));
-            router.replace("workouts");
+            router.push("(main)/profile/profileMain");
+            router.replace("(main)/workouts");
           }
         }
       } catch (err) {
@@ -65,52 +65,54 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          alignItems: "center",
-          justifyContent: "start",
-          gap: 20,
-        }}
-        style={styles.box}
-      >
-        <AntDesign name="login" size={70} color="green" />
-        <Text style={styles.header}>Welcome Back!</Text>
+    <>
+      <View style={styles.container}>
+        <ScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            justifyContent: "start",
+            gap: 20,
+          }}
+          style={styles.box}
+        >
+          <AntDesign name="login" size={70} color="green" />
+          <Text style={styles.header}>Welcome Back!</Text>
 
-        <View style={styles.content}>
-          {alert && <Text style={styles.alertText}>{alertMsg}</Text>}
+          <View style={styles.content}>
+            {alert && <Text style={styles.alertText}>{alertMsg}</Text>}
 
-          <UserInput
-            placeHolder={"Email"}
-            isPass={false}
-            setStateValue={setEmail}
-            iconName={"email-outline"}
-            setGetEmailValidationStatus={setGetEmailValidationStatus}
-          />
+            <UserInput
+              placeHolder={"Email"}
+              isPass={false}
+              setStateValue={setEmail}
+              iconName={"email-outline"}
+              setGetEmailValidationStatus={setGetEmailValidationStatus}
+            />
 
-          <UserInput
-            placeHolder={"Password"}
-            isPass={true}
-            setStateValue={setPassword}
-            iconName={"lock-outline"}
-          />
+            <UserInput
+              placeHolder={"Password"}
+              isPass={true}
+              setStateValue={setPassword}
+              iconName={"lock-outline"}
+            />
 
-          <TouchableOpacity onPress={handleLogin} style={styles.btn}>
-            <Text style={styles.textBtn}>Sign In</Text>
-          </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <Text style={styles.text}>Don't have account?</Text>
-
-            <TouchableOpacity onPress={() => router.push("users/signUp")}>
-              <Text style={[styles.text, { fontWeight: "bold" }]}>
-                Create Here
-              </Text>
+            <TouchableOpacity onPress={handleLogin} style={styles.btn}>
+              <Text style={styles.textBtn}>Sign In</Text>
             </TouchableOpacity>
+
+            <View style={styles.footer}>
+              <Text style={styles.text}>Don't have account?</Text>
+
+              <TouchableOpacity onPress={() => router.push("users/signUp")}>
+                <Text style={[styles.text, { fontWeight: "bold" }]}>
+                  Create Here
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 

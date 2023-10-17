@@ -1,21 +1,17 @@
 import {
   View,
   Text,
-  Dimensions,
-  Image,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
 } from "react-native";
 import React, { useState } from "react";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import UserInput from "../../../components/UserInput";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
-import { ref, set } from "firebase/database";
-import { router } from "expo-router";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
