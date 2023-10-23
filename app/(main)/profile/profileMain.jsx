@@ -1,34 +1,35 @@
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  Pressable,
-  Platform,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import React, { useEffect } from "react";
 import { router } from "expo-router";
-import { getUserDetailsById } from "../../../actions/users/getUserDetailsById";
-import { getAuth, signOut } from "firebase/auth";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../../store/slices/userSlice";
+
+import { signOut } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  resetUser,
+  selectUser,
+  setUser,
+} from "../../../store/slices/userSlice";
 import { Avatar } from "@rneui/themed";
 import { FlatList } from "react-native-gesture-handler";
+import { auth, db } from "../../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 
-const ProfileMain = ({ name }) => {
-  const [user, setUser] = useState(null);
-  const auth = getAuth();
-  const id = auth.currentUser.uid;
-  const userStore = useSelector(selectUser);
+const ProfileMain = () => {
+  const user = useSelector(selectUser);
+  console.log("user", user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (id) {
-      const fetchUserData = async () => {
-        const data = await getUserDetailsById(id);
-        setUser(data);
-      };
-      fetchUserData();
-    }
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const unsubscribe = onSnapshot(userRef, (doc) => {
+      const userData = doc.data();
+      console.log(userData);
+      dispatch(setUser(userData));
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleAvatarEdit = () => {
@@ -38,28 +39,32 @@ const ProfileMain = ({ name }) => {
   const handleSignout = async () => {
     await signOut(auth)
       .then(() => {
+        dispatch(resetUser());
         router.replace("(main)/profile/login");
       })
       .catch((error) => {
-        alert("Something went wrong please try gain later");
+        alert("Something went wrong please try again later");
       });
   };
   const items = [
     {
       itemStyle: styles.actionItem,
       onClick: () => {
-        console.log("a");
+        router.push("(main)/profile/editProfile");
       },
       textStyle: { fontSize: 20 },
       text: "Edit Profile",
     },
     {
+      friendRequestsTextStyle: styles.friendRequestsText,
+      friendRequestsStyle: styles.friendRequests,
       itemStyle: styles.actionItem,
       onClick: () => {
-        console.log("b");
+        router.push("(main)/profile/friends");
       },
       textStyle: { fontSize: 20 },
       text: "Friends",
+      friendRequests: user?.pendingFriendRequests?.length || null,
     },
     {
       itemStyle: styles.actionItem,
@@ -75,7 +80,9 @@ const ProfileMain = ({ name }) => {
       <Avatar
         size={64}
         rounded
-        title={user?.name[0].toUpperCase()}
+        title={
+          user?.displayName[0]?.toUpperCase() || user?.fullName[0].toUpperCase()
+        }
         containerStyle={{
           backgroundColor: "green",
           alignSelf: "center",
@@ -84,13 +91,22 @@ const ProfileMain = ({ name }) => {
       >
         <Avatar.Accessory size={24} onPress={handleAvatarEdit} />
       </Avatar>
-      <Text style={styles.header}>Hello {user?.name}!</Text>
+      <Text style={styles.header}>
+        Hello {user?.displayName || user?.fullName}!
+      </Text>
       <View style={styles.actions}>
         <FlatList
           data={items}
           renderItem={({ item }) => (
             <Pressable style={item.itemStyle} onPress={() => item.onClick()}>
               <Text style={item.textStyle}>{item.text}</Text>
+              {item.friendRequests && (
+                <View style={item.friendRequestsStyle}>
+                  <Text style={item.friendRequestsTextStyle}>
+                    {item.friendRequests}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           )}
           ItemSeparatorComponent={ItemSeparator}
@@ -134,6 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E5E4E2",
     padding: 5,
     elevation: 2,
+    flexDirection: "row",
   },
 
   text: {
@@ -161,4 +178,11 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "gray",
   },
+  friendRequests: {
+    backgroundColor: "green",
+    borderRadius: 25,
+    width: 20,
+    height: 20,
+  },
+  friendRequestsText: { alignSelf: "center", color: "white" },
 });

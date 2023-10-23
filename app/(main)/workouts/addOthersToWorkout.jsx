@@ -15,28 +15,29 @@ import { toggleState } from "../../../utils/toggleState";
 const AddOthersToWorkout = ({
   show,
   setShow,
-  membersIds,
+  friends,
   workoutName,
   setWorkoutMembers,
   workoutMembers,
   setShowDrawer,
 }) => {
-  const [membersData, setMembersData] = useState([]);
+  const [membersData, setMembersData] = useState(friends || []);
+  console.log("membersData: ", membersData);
 
   const [members, setMembers] = useState([...workoutMembers]);
 
-  useEffect(() => {
-    if (membersIds.length) {
-      const _membersData = [];
-      membersIds.forEach((memberId) => {
-        const memberData = users.find(({ id }) => id === memberId);
-        if (memberData) {
-          _membersData.push(memberData);
-        }
-      });
-      setMembersData(_membersData);
-    }
-  }, [membersIds]);
+  // useEffect(() => {
+  //   if (membersIds.length) {
+  //     const _membersData = [];
+  //     membersIds.forEach((memberId) => {
+  //       const memberData = users.find(({ id }) => id === memberId);
+  //       if (memberData) {
+  //         _membersData.push(memberData);
+  //       }
+  //     });
+  //     setMembersData(_membersData);
+  //   }
+  // }, [membersIds]);
 
   const toggleMember = (memberId) => {
     const _members = toggleState(members, memberId);
@@ -73,12 +74,12 @@ const AddOthersToWorkout = ({
                 data={membersData}
                 renderItem={({ item }) => (
                   <FriendItem
-                    testID={`member-${item?.id}`}
+                    testID={`member-${item?._id}`}
                     item={item}
-                    title={item?.name}
-                    userId={item?.id}
-                    pathname={`/users/${item?.name}`}
-                    params={{ user: item?.id }}
+                    title={item?.displayName}
+                    userId={item?._id}
+                    // pathname={`/users/${item?.name}`}
+                    // params={{ user: item?.id }}
                     toggleFriendToWorkout={toggleMember}
                     isInMembers={isInMembers}
                   />

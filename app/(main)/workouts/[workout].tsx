@@ -21,6 +21,7 @@ import {
   selectWorkout,
   resetUserWorkout,
 } from "../../../store/slices/userWorkoutsSlice";
+import { selectUser } from "../../../store/slices/userSlice";
 import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
 import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
 import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
@@ -29,7 +30,7 @@ import Drawer from "../../../components/Drawer";
 const Workout = () => {
   // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
 
-  const user = users.find(({ id }) => id === 0);
+  const user = useSelector(selectUser);
   const { workoutId } = useLocalSearchParams();
 
   const dispatch = useDispatch();
@@ -39,8 +40,8 @@ const Workout = () => {
   const [showDrawer, setShowDrower] = useState<boolean>(false);
 
   // it needts to be change while friends will be fetched from db
-  const [friends, setFriends] = useState([]);
-  const [workoutMembers, setWorkoutMembers] = useState<number[]>([user.id]);
+  const [friends, setFriends] = useState(user.friends || []);
+  const [workoutMembers, setWorkoutMembers] = useState<number[]>([user._id]);
 
   const workout = useSelector(selectWorkout);
   const exercises = workout?.exercises_list;
@@ -51,10 +52,6 @@ const Workout = () => {
     } else {
       dispatch(setUserWorkoutById(workoutId));
     }
-
-    // this will be fetched from db
-    const addFriends = users.find(({ id }) => user.id === id).friends;
-    setFriends(addFriends);
   }, [workoutId]);
 
   const saveWorkout = async () => {
@@ -208,7 +205,7 @@ const Workout = () => {
         <AddOthersToWorkout
           show={show}
           setShow={setShow}
-          membersIds={friends}
+          friends={friends}
           workoutName={workout.workout_name}
           setWorkoutMembers={setWorkoutMembers}
           workoutMembers={workoutMembers}

@@ -26,6 +26,8 @@ export default function UsersLayout() {
         name="signUp"
         options={{ headerShown: false }}
       ></Stack.Screen>
+      <Stack.Screen name="editProfile" options={{ title: "" }}></Stack.Screen>
+      <Stack.Screen name="friends" options={{ title: "" }}></Stack.Screen>
     </Stack>
   );
 }

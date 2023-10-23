@@ -12,6 +12,7 @@ import UserInput from "../../../components/UserInput";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
+import { router } from "expo-router";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -31,17 +32,26 @@ const SignUp = () => {
         );
 
         const userDocRef = doc(db, "users", userCred.user.uid);
+        const userInListDocRef = doc(db, "usersList", userCred.user.uid);
 
         const userData = {
           _id: userCred.user.uid,
           fullName: fullName,
+          displayName: fullName,
           friends: [],
           providerData: userCred.user.providerData[0],
         };
 
-        await setDoc(userDocRef, userData);
+        const userInListData = {
+          _id: userCred.user.uid,
+          displayName: fullName,
+          email: userCred.user.providerData[0].email,
+        };
 
-        router.replace("users/login");
+        await setDoc(userDocRef, userData);
+        await setDoc(userInListDocRef, userInListData);
+
+        router.replace("(main)/profile/profileMain");
       } catch (error) {
         // Handle errors here
         if (error.message.includes("email-already-in-use")) {

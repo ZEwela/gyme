@@ -42,7 +42,7 @@ export default function Page() {
   return (
     <View style={styles.container}>
       <FontAwesome5 name="door-open" size={90} color="green" />
-      <ActivityIndicator size={"large"} color="green" />
+      {/* <ActivityIndicator size={"large"} color="green" /> */}
     </View>
   );
 }

@@ -8,12 +8,13 @@ import {
   selectSetsByExerciseId,
   setUserWorkoutSetsByExerciseId,
 } from "../store/slices/userWorkoutsSlice";
+import { selectUser } from "../store/slices/userSlice";
 
 const ExerciseCard = ({ name, exerciseId }) => {
   const setsFromStore = useSelector((state) =>
     selectSetsByExerciseId(state)(exerciseId)
   );
-
+  const user = useSelector(selectUser);
   const [sets, setSets] = useState(setsFromStore || []);
 
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const ExerciseCard = ({ name, exerciseId }) => {
 
   return (
     <View style={styles.item}>
-      <Text style={styles.text}>{name}</Text>
+      <Text style={styles.text}>{user?.displayName || user?.fullName}</Text>
 
       <FlatList
         data={sets}

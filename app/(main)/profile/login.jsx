@@ -103,7 +103,9 @@ const Login = () => {
             <View style={styles.footer}>
               <Text style={styles.text}>Don't have account?</Text>
 
-              <TouchableOpacity onPress={() => router.push("users/signUp")}>
+              <TouchableOpacity
+                onPress={() => router.push("(main)/profile/signUp")}
+              >
                 <Text style={[styles.text, { fontWeight: "bold" }]}>
                   Create Here
                 </Text>
