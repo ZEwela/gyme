@@ -16,14 +16,12 @@ import { doc, onSnapshot } from "firebase/firestore";
 
 const ProfileMain = () => {
   const user = useSelector(selectUser);
-  console.log("user", user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const userRef = doc(db, "users", auth.currentUser.uid);
     const unsubscribe = onSnapshot(userRef, (doc) => {
       const userData = doc.data();
-      console.log(userData);
       dispatch(setUser(userData));
     });
 
@@ -46,6 +44,7 @@ const ProfileMain = () => {
         alert("Something went wrong please try again later");
       });
   };
+
   const items = [
     {
       itemStyle: styles.actionItem,

@@ -1,14 +1,13 @@
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
-import React, { useState } from "react";
-import { FontAwesome, AntDesign, Ionicons } from "@expo/vector-icons";
-import { removeFriend } from "../actions/users/removeFriend";
-import { removeUserFriend } from "../store/slices/userSlice";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import React from "react";
+import { removeFriend } from "../../actions/users/removeFriend";
+import { removeUserFriend } from "../../store/slices/userSlice";
 import { useDispatch } from "react-redux";
+import Action from "./Action";
 
-const FriendListItem = ({ friend, pressed, handleToggleFriend }) => {
+const FriendListItem = ({ friend }) => {
   const dispatch = useDispatch();
-  const [isPressed, setIsPressed] = useState(pressed);
-  handleToggle = () => {
+  const handleRemoveFriend = () => {
     Alert.alert(
       null,
       "Are you sure that you want to remove it from your friends list?",
@@ -20,9 +19,8 @@ const FriendListItem = ({ friend, pressed, handleToggleFriend }) => {
           },
         },
         {
-          text: "Yes, delete",
+          text: "Yes, remove",
           onPress: () => {
-            console.log("removing", friend.email);
             dispatch(removeUserFriend(friend.email));
             removeFriend(friend);
           },
@@ -36,13 +34,7 @@ const FriendListItem = ({ friend, pressed, handleToggleFriend }) => {
         <Text style={styles.text}>{friend.displayName}</Text>
         <Text style={styles.text}>{friend.email}</Text>
       </View>
-      <Pressable onPress={handleToggle}>
-        {isPressed ? (
-          <AntDesign name="checkcircle" size={30} color="green" />
-        ) : (
-          <Ionicons name="md-add-circle-outline" size={30} color="black" />
-        )}
-      </Pressable>
+      <Action handler={handleRemoveFriend} text={"Remove"} textStyle={"red"} />
     </View>
   );
 };

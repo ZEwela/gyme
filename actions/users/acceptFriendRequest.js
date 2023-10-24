@@ -5,18 +5,15 @@ export const acceptFriendRequest = async (requestInfo) => {
   const currentUserRef = doc(db, "users", auth.currentUser.uid);
   const currentUserData = (await getDoc(currentUserRef)).data();
 
-  console.log("currentuserdata", currentUserData);
-
-  // Add friend in user's friends array
   const friend = {
     _id: requestInfo.sender_id,
     displayName: requestInfo.sender_displayName,
     email: requestInfo.sender_email,
   };
-  // Retrieve the current array, push the new item, and then update the field
+
   const currentRequests = currentUserData.friends || [];
   currentRequests.push(friend);
-  // Update the document with the new array
+
   updateDoc(currentUserRef, {
     friends: currentRequests,
   });

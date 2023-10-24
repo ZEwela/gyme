@@ -1,91 +1,67 @@
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import React, { useState } from "react";
 import { FlatList, TextInput } from "react-native-gesture-handler";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../store/slices/userSlice";
+import { FontAwesome } from "@expo/vector-icons";
+
 import {
-  addUserFriend,
-  removePendingFriendRequest,
-  removeUserFriend,
-  selectUser,
-} from "../../../store/slices/userSlice";
-import { FontAwesome, AntDesign, Ionicons } from "@expo/vector-icons";
+  FriendListItem,
+  PendingFriendRequests,
+  SentFriendRequests,
+  FriendCard,
+} from "../../../components/friends/index";
 import { getUserDetailsByEmail } from "../../../actions/users/getUserDetailsByEmail";
-import FriendListItem from "../../../components/FriendListItem";
-import {
-  addFriend,
-  sendFriendRequest,
-} from "../../../actions/users/sendFriendRequest";
-import { removeFriend } from "../../../actions/users/removeFriend";
-import { acceptFriendRequest } from "../../../actions/users/acceptFriendRequest";
+import { sendFriendRequest } from "../../../actions/users/sendFriendRequest";
 
 const friends = () => {
-  const dispatch = useDispatch();
   const user = useSelector(selectUser);
-
-  //   state for user input: email of person you looking for
-  const [friendsEmial, setFriendsEmail] = useState("");
-
-  const [isSearch, setIsSearch] = useState(false);
-  const [noResults, setNoResults] = useState(false);
-
   const friends = user?.friends || null;
-  const [searchResult, setSearchResult] = useState(null);
-  const [pressed, setPressed] = useState(false);
+
+  const [searchedEmail, setSearchedEmail] = useState("");
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isNoResultsMessageVisible, setIsNoResultsMessageVisible] =
+    useState(false);
+  const [searchResults, setSearchResults] = useState(null);
 
   const handleShowSearch = () => {
-    setNoResults(false);
-    setIsSearch(!isSearch);
+    setIsNoResultsMessageVisible(false);
+    setIsSearchVisible(!isSearchVisible);
   };
 
   const handleSearch = async () => {
-    if (friendsEmial.length <= 0) {
-      setIsSearch(false);
+    if (searchedEmail.length <= 0) {
+      setIsSearchVisible(false);
       return;
     }
-    const result = await getUserDetailsByEmail(friendsEmial.trim());
-    if (result.length === 0) {
-      setNoResults(true);
+
+    const results = await getUserDetailsByEmail(searchedEmail.trim());
+
+    if (results.length === 0) {
+      setIsNoResultsMessageVisible(true);
 
       setTimeout(() => {
-        setNoResults(false);
+        setIsNoResultsMessageVisible(false);
       }, 5000);
     } else {
-      setSearchResult(...result);
+      setSearchResults(...results);
     }
 
-    setFriendsEmail("");
-    setIsSearch(false);
+    setSearchedEmail("");
+    setIsSearchVisible(false);
   };
 
-  const handleToggleFriend = () => {
-    setPressed(!pressed);
-    if (!pressed) {
-      sendFriendRequest(searchResult);
-    }
-
-    setSearchResult(null);
-  };
-
-  const handleAcceptInvite = async (requestInfo) => {
-    await acceptFriendRequest(requestInfo);
-    // const friend = {
-    //   _id: requestInfo.sender_id,
-    //   displayName: requestInfo.sender_displayName,
-    //   email: requestInfo.sender_email,
-    // };
-
-    // dispatch(addUserFriend(friend));
-    // dispatch(removePendingFriendRequest(requestInfo.request_id));
-  };
-  const handleRejectInvite = () => {
-    console.log("reject");
+  const handleSendRequest = () => {
+    sendFriendRequest(searchResults);
+    setSearchResults(null);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.withSearchIcon}>
         <Text style={styles.textTitle}>Find by an email: </Text>
-        {!isSearch && (
+
+        {!isSearchVisible && (
           <Pressable onPress={handleShowSearch}>
             <FontAwesome
               name="search"
@@ -97,13 +73,13 @@ const friends = () => {
         )}
       </View>
 
-      {isSearch && (
+      {isSearchVisible && (
         <View style={styles.search}>
           <TextInput
             style={styles.input}
-            value={friendsEmial}
+            value={searchedEmail}
             placeholder="email"
-            onChangeText={setFriendsEmail}
+            onChangeText={setSearchedEmail}
           />
           <Pressable onPress={handleSearch}>
             <FontAwesome
@@ -115,60 +91,29 @@ const friends = () => {
           </Pressable>
         </View>
       )}
-      {noResults && (
-        <Text style={styles.text}>
-          There is no user under this email. Please check if an email is
-          correct.
-        </Text>
+
+      {isNoResultsMessageVisible && <Text style={styles.text}>No results</Text>}
+
+      {searchResults && (
+        <FriendCard
+          displayName={searchResults.displayName}
+          email={searchResults.email}
+          actions={[
+            {
+              handler: handleSendRequest,
+              text: "Send request",
+              style: "green",
+            },
+          ]}
+        />
       )}
 
-      {searchResult && (
-        <View style={styles.friendContainer}>
-          <View style={styles.friendItem}>
-            <Text style={styles.text}>{searchResult.displayName}</Text>
-            <Text style={styles.text}>{searchResult.email}</Text>
-          </View>
-          <Pressable onPress={handleToggleFriend}>
-            {pressed ? (
-              <AntDesign name="checkcircle" size={30} color="green" />
-            ) : (
-              //   <Ionicons name="md-add-circle-outline" size={30} color="black" />
-              <View style={styles.invite}>
-                <Text>Send</Text>
-                <Text>request</Text>
-              </View>
-            )}
-          </Pressable>
-        </View>
+      {user?.sentFriendRequests?.length > 0 && (
+        <SentFriendRequests requests={user.sentFriendRequests} />
       )}
 
       {user?.pendingFriendRequests?.length > 0 && (
-        <View>
-          <Text style={styles.textTitle}>Pending requests: </Text>
-          <FlatList
-            data={user.pendingFriendRequests}
-            renderItem={({ item }) => (
-              <View style={styles.friendContainer}>
-                <View>
-                  <Text>{item.sender_displayName}</Text>
-                  <Text>{item.sender_email}</Text>
-                </View>
-                <View style={styles.pendingRequestsActions}>
-                  <Pressable onPress={() => handleAcceptInvite(item)}>
-                    <View style={styles.invite}>
-                      <Text style={styles.acceptText}>Accept</Text>
-                      <Text style={styles.acceptText}>invite</Text>
-                    </View>
-                  </Pressable>
-                  <Pressable onPress={handleRejectInvite}>
-                    <Ionicons name="trash-outline" size={32} color="red" />
-                  </Pressable>
-                </View>
-              </View>
-            )}
-            keyExtractor={(item) => item.request_id}
-          />
-        </View>
+        <PendingFriendRequests requests={user.pendingFriendRequests} />
       )}
 
       {friends?.length > 0 && (
@@ -179,9 +124,7 @@ const friends = () => {
           <View>
             <FlatList
               data={friends}
-              renderItem={({ item }) => (
-                <FriendListItem friend={item} pressed={true} />
-              )}
+              renderItem={({ item }) => <FriendListItem friend={item} />}
               keyExtractor={(item) => item?._id}
             />
           </View>
@@ -195,20 +138,21 @@ export default friends;
 
 const styles = StyleSheet.create({
   container: { flex: 1, margin: 20, gap: 20 },
-  itemHeader: {
+  withSearchIcon: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
   },
   textTitle: { fontSize: 22, fontWeight: "bold" },
-  text: { fontSize: 20 },
-  item: { marginVertical: 10, backgroundColor: "#E5E4E2", padding: 20 },
-  edit: {
-    elevation: 2,
+  searchIcon: {
+    elevation: 5,
     backgroundColor: "#bab5b5",
-    borderRadius: 25,
-    padding: 2,
+    padding: 8,
+  },
+  search: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   input: {
     padding: 5,
@@ -216,46 +160,5 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     width: "90%",
   },
-  withSearchIcon: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  search: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  searchIcon: {
-    elevation: 5,
-    backgroundColor: "#bab5b5",
-    padding: 8,
-  },
-  friendContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-    backgroundColor: "#E5E4E2",
-    padding: 10,
-  },
-  invite: {
-    fontSize: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    elevation: 1,
-    padding: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  pendingRequestsActions: {
-    flexDirection: "row",
-    gap: 5,
-    alignItems: "center",
-  },
-  acceptText: {
-    color: "green",
-  },
+  text: { fontSize: 18 },
 });
-
-// usertest@gmail.com

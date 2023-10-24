@@ -15,32 +15,28 @@ const Drawer = ({
     <View style={styles.container}>
       <View style={styles.item}>
         <Pressable onPress={() => setShowAddNote(true)}>
-          {/* <SimpleLineIcons name="note" size={28} color="white" /> */}
           <Text style={styles.text}>Add note </Text>
         </Pressable>
       </View>
       <View style={styles.item}>
         <Link href="/(main)/exercises/exercisesMain" asChild>
           <Pressable onPress={() => setShowDrawer(false)}>
-            {/* <MaterialIcons name="fitness-center" size={30} color="white" /> */}
             <Text style={styles.text}>Add exercises </Text>
           </Pressable>
         </Link>
       </View>
       <View style={styles.item}>
         <Pressable onPress={() => setShow(true)}>
-          {/* <Ionicons name="person-add-outline" size={30} color="white" /> */}
           <Text style={styles.text}>Add friends </Text>
         </Pressable>
       </View>
-      <View style={styles.item}>
-        {workout.workout_id !== workout.workout_name && (
+      {workout.workout_id !== workout.workout_name && (
+        <View style={styles.item}>
           <Pressable onPress={handleDeleteingWorkout}>
             <Text style={styles.textDelete}>Delete this workout</Text>
-            {/* <Ionicons name="trash-outline" size={32} color="white" /> */}
           </Pressable>
-        )}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
