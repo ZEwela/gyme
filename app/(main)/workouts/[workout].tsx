@@ -8,11 +8,9 @@ import {
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Link, Stack, router, useLocalSearchParams } from "expo-router";
-import { Ionicons, SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-
-import { users } from "../../../data";
 import AddOthersToWorkout from "./addOthersToWorkout";
 import Item from "../../../components/Item";
 import AddWorkoutNote from "../../../components/AddWorkoutNote";
@@ -21,30 +19,21 @@ import {
   selectWorkout,
   resetUserWorkout,
 } from "../../../store/slices/userWorkoutsSlice";
-import { selectUser } from "../../../store/slices/userSlice";
 import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
 import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
 import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
 import Drawer from "../../../components/Drawer";
 
 const Workout = () => {
-  // TO CHANGE WHEN THE AUTHORIZATION WILL BE ADDED:
-
-  const user = useSelector(selectUser);
-  const { workoutId } = useLocalSearchParams();
-
   const dispatch = useDispatch();
-
-  const [show, setShow] = useState<boolean>(false);
-  const [showAddNote, setShowAddNote] = useState<boolean>(false);
-  const [showDrawer, setShowDrower] = useState<boolean>(false);
-
-  // it needts to be change while friends will be fetched from db
-  const [friends, setFriends] = useState(user.friends || []);
-  const [workoutMembers, setWorkoutMembers] = useState<number[]>([user._id]);
+  const { workoutId } = useLocalSearchParams();
 
   const workout = useSelector(selectWorkout);
   const exercises = workout?.exercises_list;
+
+  const [showAddOthers, setShowAddOthers] = useState<boolean>(false);
+  const [showAddNote, setShowAddNote] = useState<boolean>(false);
+  const [showDrawer, setShowDrower] = useState<boolean>(false);
 
   useEffect(() => {
     if (workout && workoutId === workout.workout_id) {
@@ -151,7 +140,6 @@ const Workout = () => {
         },
       ],
       { cancelable: false }
-      //clicking out side of alert will not cancel
     );
   };
 
@@ -196,19 +184,15 @@ const Workout = () => {
       {showDrawer && (
         <Drawer
           handleDeleteingWorkout={handleDeleteingWorkout}
-          setShow={setShow}
+          setShow={setShowAddOthers}
           setShowAddNote={setShowAddNote}
           setShowDrawer={setShowDrower}
         />
       )}
-      {show && (
+      {showAddOthers && (
         <AddOthersToWorkout
-          show={show}
-          setShow={setShow}
-          friends={friends}
-          workoutName={workout.workout_name}
-          setWorkoutMembers={setWorkoutMembers}
-          workoutMembers={workoutMembers}
+          show={showAddOthers}
+          setShow={setShowAddOthers}
           setShowDrawer={setShowDrower}
         />
       )}
@@ -229,8 +213,6 @@ const Workout = () => {
               params={{
                 exerciseName: item.exercise_name,
                 exerciseId: item.exercise_id,
-                // with state it should be deal diffrently
-                workoutMembers: workoutMembers.toString(),
                 workout: workout.workout_id,
               }}
             />

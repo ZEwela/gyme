@@ -62,6 +62,24 @@ const userWorkoutsSlice = createSlice({
         exercises_list: [...filteredExercises],
       };
     },
+    addMemberToWorkout(state, action) {
+      state.userWorkout = {
+        ...state.userWorkout,
+        workout_members: [
+          ...(state.userWorkout?.workout_members || []),
+          action.payload,
+        ],
+      };
+    },
+    removeMemberFromWorkout(state, action) {
+      const filteredmembers = state.userWorkout.workout_members.filter(
+        (member) => member !== action.payload
+      );
+      state.userWorkout = {
+        ...state.userWorkout,
+        workout_members: [...filteredmembers],
+      };
+    },
   },
 });
 
@@ -87,5 +105,7 @@ export const {
   addExerciseToUserWorkout,
   removeExerciseFromUserWorkout,
   setUserWorkoutNote,
+  addMemberToWorkout,
+  removeMemberFromWorkout,
 } = userWorkoutsSlice.actions;
 export default userWorkoutsSlice.reducer;

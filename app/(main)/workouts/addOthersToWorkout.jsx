@@ -1,60 +1,41 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  FlatList,
-  Modal,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Pressable, FlatList, Modal } from "react-native";
+import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { users } from "../../../data";
 import FriendItem from "../../../components/FriendItem";
 import { toggleState } from "../../../utils/toggleState";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../../../store/slices/userSlice";
+import {
+  addMemberToWorkout,
+  removeMemberFromWorkout,
+  selectWorkout,
+} from "../../../store/slices/userWorkoutsSlice";
 
-const AddOthersToWorkout = ({
-  show,
-  setShow,
-  friends,
-  workoutName,
-  setWorkoutMembers,
-  workoutMembers,
-  setShowDrawer,
-}) => {
-  const [membersData, setMembersData] = useState(friends || []);
-  console.log("membersData: ", membersData);
+const AddOthersToWorkout = ({ show, setShow, setShowDrawer }) => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const workout = useSelector(selectWorkout);
 
-  const [members, setMembers] = useState([...workoutMembers]);
-
-  // useEffect(() => {
-  //   if (membersIds.length) {
-  //     const _membersData = [];
-  //     membersIds.forEach((memberId) => {
-  //       const memberData = users.find(({ id }) => id === memberId);
-  //       if (memberData) {
-  //         _membersData.push(memberData);
-  //       }
-  //     });
-  //     setMembersData(_membersData);
-  //   }
-  // }, [membersIds]);
+  const [friends, setFriends] = useState(user?.friends || []);
+  const [members, setMembers] = useState(workout?.workout_members || []);
 
   const toggleMember = (memberId) => {
+    if (members.includes(memberId)) {
+      dispatch(removeMemberFromWorkout(memberId));
+    } else {
+      dispatch(addMemberToWorkout(memberId));
+    }
     const _members = toggleState(members, memberId);
-
     setMembers(_members);
-
-    // TO DO: how to create workout for you, and other users and what to do with adding and removing members during workout
   };
 
   const handleClosing = () => {
-    setWorkoutMembers([...members]);
     setShow(false);
     setShowDrawer(false);
   };
 
   const isInMembers = (id) => {
-    return members.includes(id);
+    return members?.includes(id);
   };
 
   return (
@@ -69,17 +50,15 @@ const AddOthersToWorkout = ({
             </Pressable>
           </View>
           <View styles={styles.body}>
-            {membersData.length ? (
+            {friends.length ? (
               <FlatList
-                data={membersData}
+                data={friends}
                 renderItem={({ item }) => (
                   <FriendItem
                     testID={`member-${item?._id}`}
                     item={item}
                     title={item?.displayName}
                     userId={item?._id}
-                    // pathname={`/users/${item?.name}`}
-                    // params={{ user: item?.id }}
                     toggleFriendToWorkout={toggleMember}
                     isInMembers={isInMembers}
                   />

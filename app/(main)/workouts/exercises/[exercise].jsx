@@ -4,7 +4,6 @@ import { useLocalSearchParams } from "expo-router";
 import { users } from "../../../../data";
 import { FlatList } from "react-native-gesture-handler";
 import ExerciseCard from "../../../../components/ExerciseCard";
-import { getAuth } from "firebase/auth";
 
 const Exercise = () => {
   const params = useLocalSearchParams();

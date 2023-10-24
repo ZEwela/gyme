@@ -27,7 +27,7 @@ const Drawer = ({
       </View>
       <View style={styles.item}>
         <Pressable onPress={() => setShow(true)}>
-          <Text style={styles.text}>Add friends </Text>
+          <Text style={styles.text}>Add members </Text>
         </Pressable>
       </View>
       {workout.workout_id !== workout.workout_name && (
