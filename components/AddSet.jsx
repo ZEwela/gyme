@@ -2,9 +2,12 @@ import { View, Text, StyleSheet, Button, Pressable } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
-import { setUserWorkoutSetsByExerciseId } from "../store/slices/userWorkoutsSlice";
+import {
+  addMembersSetsByExerciseId,
+  setUserWorkoutSetsByExerciseId,
+} from "../store/slices/userWorkoutsSlice";
 
-const AddSet = ({ sets, setSets, exerciseId }) => {
+const AddSet = ({ sets, setSets, exerciseId, memberId }) => {
   const dispatch = useDispatch();
 
   const handleAddingSet = () => {
@@ -34,7 +37,13 @@ const AddSet = ({ sets, setSets, exerciseId }) => {
     const updatedSets = [...sets, newSet];
 
     setSets(updatedSets);
-    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
+    if (memberId) {
+      dispatch(
+        addMembersSetsByExerciseId({ memberId, exerciseId, updatedSets })
+      );
+    } else {
+      dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
+    }
   };
 
   return (

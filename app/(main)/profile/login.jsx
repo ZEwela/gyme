@@ -41,7 +41,7 @@ const Login = () => {
           if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
             dispatch(setUser(userData));
-            router.push("(main)/profile/profileMain");
+            router.replace("(main)/profile/profileMain");
             router.replace("(main)/workouts");
           }
         }
@@ -104,7 +104,7 @@ const Login = () => {
               <Text style={styles.text}>Don't have account?</Text>
 
               <TouchableOpacity
-                onPress={() => router.push("(main)/profile/signUp")}
+                onPress={() => router.replace("(main)/profile/signUp")}
               >
                 <Text style={[styles.text, { fontWeight: "bold" }]}>
                   Create Here

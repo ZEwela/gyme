@@ -80,6 +80,25 @@ const userWorkoutsSlice = createSlice({
         workout_members: [...filteredmembers],
       };
     },
+    addMembersSetsByExerciseId(state, action) {
+      const { memberId, sets, updatedSets, exerciseId } = action.payload;
+      console.log("from workoutsSlice", action.payload);
+      state.userWorkout = {
+        ...state.userWorkout,
+        members_sets: { ...(state.userWorkout.members_sets || {}) },
+      };
+      const updatedMembersSets = { ...state.userWorkout.members_sets };
+      updatedMembersSets[memberId] = {
+        ...(state.userWorkout.members_sets[memberId] || {}),
+      };
+
+      updatedMembersSets[memberId][exerciseId] = sets || updatedSets;
+
+      state.userWorkout = {
+        ...state.userWorkout,
+        members_sets: updatedMembersSets,
+      };
+    },
   },
 });
 
@@ -91,6 +110,15 @@ export const selectSetsByExerciseId = createSelector(
   [selectWorkout],
   (userWorkout) => (exerciseId) => {
     return userWorkout.sets ? userWorkout.sets[exerciseId] : null;
+  }
+);
+export const selectMembersSets = (state) =>
+  state.userWorkouts.userWorkout.members_sets;
+export const selectMemberSetsByMemberId = createSelector(
+  [selectMembersSets],
+  (members_sets) => (memberId) => {
+    console.log("from workout slice", members_sets);
+    return members_sets[memberId] ? members_sets.sets[memberId] : null;
   }
 );
 
@@ -107,5 +135,6 @@ export const {
   setUserWorkoutNote,
   addMemberToWorkout,
   removeMemberFromWorkout,
+  addMembersSetsByExerciseId,
 } = userWorkoutsSlice.actions;
 export default userWorkoutsSlice.reducer;

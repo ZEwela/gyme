@@ -1,30 +1,30 @@
 import { View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { users } from "../../../../data";
 import { FlatList } from "react-native-gesture-handler";
 import ExerciseCard from "../../../../components/ExerciseCard";
+import { useSelector } from "react-redux";
+import { selectWorkout } from "../../../../store/slices/userWorkoutsSlice";
+import MemberExerciseCard from "../../../../components/MemberExerciseCard";
 
 const Exercise = () => {
   const params = useLocalSearchParams();
+  const { exerciseId } = params;
+  const workout = useSelector(selectWorkout);
 
-  const { exerciseId, workoutMembers, workout } = params;
-
-  // TODO: change when you will have store
-  const workoutMembersToArray = workoutMembers?.split(",") || [];
-
-  const members = users.filter((user) =>
-    workoutMembersToArray.includes(user.id.toString())
-  );
+  const members = workout.workout_members || null;
 
   return (
     <View>
-      <FlatList
-        data={members}
-        renderItem={({ item }) => (
-          <ExerciseCard name={item.name} exerciseId={exerciseId} />
-        )}
-      />
+      <ExerciseCard exerciseId={exerciseId} />
+      {members?.length > 0 && (
+        <FlatList
+          data={members}
+          renderItem={({ item }) => (
+            <MemberExerciseCard memberId={item} exerciseId={exerciseId} />
+          )}
+        />
+      )}
     </View>
   );
 };

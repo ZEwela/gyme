@@ -106,7 +106,9 @@ const SignUp = () => {
 
           <View style={styles.footer}>
             <Text style={styles.text}>Have an account?</Text>
-            <TouchableOpacity onPress={() => router.replace("users/login")}>
+            <TouchableOpacity
+              onPress={() => router.replace("(main)/profile/login")}
+            >
               <Text style={[styles.text, { fontWeight: "bold" }]}>
                 Login Here
               </Text>

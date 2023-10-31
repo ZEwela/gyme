@@ -1,29 +1,56 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import SetItem from "./SetItem";
 import AddSet from "./AddSet";
 import {
-  selectSetsByExerciseId,
+  addMembersSetsByExerciseId,
+  selectMemberSetsByMemberId,
+  selectMembersSets,
+  selectWorkout,
   setUserWorkoutSetsByExerciseId,
 } from "../store/slices/userWorkoutsSlice";
-import { selectUser } from "../store/slices/userSlice";
+import { getUserSetsByExerciseId } from "../actions/exercises/getUserSetsByExerciseId";
 
-const ExerciseCard = ({ exerciseId }) => {
+const MemberExerciseCard = ({ memberId, exerciseId }) => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const membersSetsFromStore = useSelector(selectMembersSets);
 
-  const setsFromStore = useSelector((state) =>
-    selectSetsByExerciseId(state)(exerciseId)
+  const [sets, setSets] = useState(
+    membersSetsFromStore &&
+      membersSetsFromStore[memberId] &&
+      membersSetsFromStore[memberId][exerciseId]
+      ? membersSetsFromStore[memberId][exerciseId]
+      : []
   );
 
-  const [sets, setSets] = useState(setsFromStore || []);
+  useEffect(() => {
+    if (sets.length > 0) {
+      return;
+    } else {
+      const getUserSets = async () => {
+        const userSets = await getUserSetsByExerciseId(memberId, exerciseId);
+
+        if (userSets) {
+          setSets(userSets);
+          const data = {
+            memberId: memberId,
+            sets: userSets,
+            exerciseId: exerciseId,
+          };
+
+          dispatch(addMembersSetsByExerciseId(data));
+        }
+      };
+
+      getUserSets();
+    }
+  }, []);
 
   const removeSet = (setOrder) => {
     const updatedSets = sets.filter((set) => set.set_order !== setOrder);
     setSets([...updatedSets]);
-    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
+    dispatch(addMembersSetsByExerciseId({ memberId, updatedSets, exerciseId }));
   };
   const updateSet = (setOrder, newWeight, newReps, newHold, newNote) => {
     const updatedSets = sets.map((set) => {
@@ -40,13 +67,12 @@ const ExerciseCard = ({ exerciseId }) => {
       return set;
     });
     setSets([...updatedSets]);
-
-    dispatch(setUserWorkoutSetsByExerciseId({ exerciseId, updatedSets }));
+    dispatch(addMembersSetsByExerciseId({ memberId, updatedSets, exerciseId }));
   };
 
   return (
     <View style={styles.item}>
-      <Text style={styles.text}>{user?.displayName || user?.fullName}</Text>
+      <Text style={styles.text}>{memberId}</Text>
 
       <FlatList
         data={sets}
@@ -64,14 +90,19 @@ const ExerciseCard = ({ exerciseId }) => {
         )}
         horizontal={true}
         ListFooterComponent={
-          <AddSet sets={sets} setSets={setSets} exerciseId={exerciseId} />
+          <AddSet
+            sets={sets}
+            setSets={setSets}
+            exerciseId={exerciseId}
+            memberId={memberId}
+          />
         }
       />
     </View>
   );
 };
 
-export default ExerciseCard;
+export default MemberExerciseCard;
 
 const styles = StyleSheet.create({
   item: {

@@ -1,5 +1,5 @@
 import { View, StyleSheet, Pressable, FlatList, Modal } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import FriendItem from "../../../components/FriendItem";
 import { toggleState } from "../../../utils/toggleState";
@@ -56,9 +56,7 @@ const AddOthersToWorkout = ({ show, setShow, setShowDrawer }) => {
                 renderItem={({ item }) => (
                   <FriendItem
                     testID={`member-${item?._id}`}
-                    item={item}
-                    title={item?.displayName}
-                    userId={item?._id}
+                    friend={item}
                     toggleFriendToWorkout={toggleMember}
                     isInMembers={isInMembers}
                   />

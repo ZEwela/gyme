@@ -20,6 +20,7 @@ import {
   resetUserWorkout,
 } from "../../../store/slices/userWorkoutsSlice";
 import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
+import { memberWorkoutSave } from "../../../actions/workouts/memberWorkoutSave";
 import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
 import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
 import Drawer from "../../../components/Drawer";
@@ -46,6 +47,11 @@ const Workout = () => {
   const saveWorkout = async () => {
     try {
       const workoutSaved = await save(workout);
+      if (workout.workout_members && workout.workout_members.length > 0) {
+        workout.workout_members.forEach(async (member) => {
+          const memberWorkoutSaved = await memberWorkoutSave(member, workout);
+        });
+      }
       alert(workoutSaved);
       dispatch(resetUserWorkout());
       router.replace("/(main)/workouts/workoutsMain");

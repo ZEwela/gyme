@@ -1,11 +1,10 @@
 import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 
-export const saveWorkout = (workout) => {
+export const memberWorkoutSave = (member, workout) => {
   return new Promise(async (resolve, reject) => {
     try {
       const timeStamp = serverTimestamp();
-      const user = auth.currentUser;
 
       const newWorkoutRef = doc(collection(db, "workouts"));
 
@@ -16,17 +15,17 @@ export const saveWorkout = (workout) => {
         workout_name: workout.workout_name.toLowerCase(),
         exercises_list: workout.exercises_list,
         created_at: timeStamp,
-        user_id: user.uid,
-        sets: workout.sets || null,
+        user_id: member,
+        sets: workout.members_sets[member] || null,
         note: workout.note || null,
       };
 
-      if (workout.sets) {
-        for (const key in workout.sets) {
-          if (Object.hasOwnProperty.call(workout.sets, key)) {
-            const array = workout.sets[key];
+      if (workout.members_sets && workout.members_sets[member]) {
+        for (const key in workout.members_sets[member]) {
+          if (Object.hasOwnProperty.call(workout.members_sets[member], key)) {
+            const array = workout.members_sets[member][key];
             const userSetsByExerciseRef = doc(
-              collection(db, "userExercisesSets", key, user.uid)
+              collection(db, "userExercisesSets", key, member)
             );
             const data = {
               created_at: timeStamp,
@@ -37,10 +36,10 @@ export const saveWorkout = (workout) => {
         }
       }
       await setDoc(newWorkoutRef, workoutData);
-      resolve("Workout saved");
+      resolve("Member workout saved");
     } catch (error) {
       reject(error);
-      console.error("Error trying to save workout: ", error);
+      console.error("Error trying to save member workout: ", error);
     }
   });
 };

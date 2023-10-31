@@ -7,14 +7,12 @@ import { Tabs } from "expo-router/tabs";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CheckedExercisesProvider } from "../contexts/CheckedExercisesContext";
 import { Text } from "react-native";
-import { selectUser } from "../store/slices/userSlice";
 import { getAuth } from "firebase/auth";
 
 export default function MainLayout() {
   const pathname = usePathname();
   const params = useGlobalSearchParams();
 
-  // Track the location in your analytics provider here.
   const user = getAuth().currentUser;
 
   useEffect(() => {
