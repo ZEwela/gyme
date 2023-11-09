@@ -15,8 +15,8 @@ const AddOthersToWorkout = ({ show, setShow, setShowDrawer }) => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const workout = useSelector(selectWorkout);
+  const userFriends = Object.values(user.friends || {});
 
-  const [friends, setFriends] = useState(user?.friends || []);
   const [members, setMembers] = useState(workout?.workout_members || []);
 
   const toggleMember = (memberId) => {
@@ -50,9 +50,9 @@ const AddOthersToWorkout = ({ show, setShow, setShowDrawer }) => {
             </Pressable>
           </View>
           <View styles={styles.body}>
-            {friends.length ? (
+            {userFriends.length ? (
               <FlatList
-                data={friends}
+                data={userFriends}
                 renderItem={({ item }) => (
                   <FriendItem
                     testID={`member-${item?._id}`}

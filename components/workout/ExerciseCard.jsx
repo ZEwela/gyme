@@ -7,8 +7,8 @@ import AddSet from "./AddSet";
 import {
   selectSetsByExerciseId,
   setUserWorkoutSetsByExerciseId,
-} from "../store/slices/userWorkoutsSlice";
-import { selectUser } from "../store/slices/userSlice";
+} from "../../store/slices/userWorkoutsSlice";
+import { selectUser } from "../../store/slices/userSlice";
 
 const ExerciseCard = ({ exerciseId }) => {
   const dispatch = useDispatch();

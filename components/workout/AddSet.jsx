@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import {
   addMembersSetsByExerciseId,
   setUserWorkoutSetsByExerciseId,
-} from "../store/slices/userWorkoutsSlice";
+} from "../../store/slices/userWorkoutsSlice";
 
 const AddSet = ({ sets, setSets, exerciseId, memberId }) => {
   const dispatch = useDispatch();

@@ -6,7 +6,7 @@ import {
   setUserDisplayName,
   setUserFullName,
 } from "../../../store/slices/userSlice";
-import EditProfileItem from "../../../components/EditProfileItem";
+import EditProfileItem from "../../../components/profile/EditProfileItem";
 import { ScrollView } from "react-native-gesture-handler";
 import { updateUserDisplayName } from "../../../actions/users/updateUserDisplayName";
 import { updateUserEmail } from "../../../actions/users/updateUserEmail";
@@ -32,13 +32,13 @@ const editProfile = () => {
     setEditFullName(false);
     dispatch(setUserFullName(fullName));
   };
-  const handleEmailEdit = () => {
-    setEditEmail(true);
-  };
-  const saveEmailChanges = async () => {
-    await updateUserEmail(email);
-    setEditEmail(false);
-  };
+  // const handleEmailEdit = () => {
+  //   setEditEmail(true);
+  // };
+  // const saveEmailChanges = async () => {
+  //   await updateUserEmail(email);
+  //   setEditEmail(false);
+  // };
   const handleDisplayNameEdit = () => {
     setEditDisplayName(true);
   };

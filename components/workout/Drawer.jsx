@@ -2,7 +2,7 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 import { useSelector } from "react-redux";
-import { selectWorkout } from "../store/slices/userWorkoutsSlice";
+import { selectWorkout } from "../../store/slices/userWorkoutsSlice";
 
 const Drawer = ({
   setShowAddNote,

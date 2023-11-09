@@ -11,7 +11,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { auth, db } from "../../../firebase";
 import UserInput from "../../../components/UserInput";
-import { Stack, Tabs, router } from "expo-router";
+import { router } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../store/slices/userSlice";

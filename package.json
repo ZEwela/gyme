@@ -10,12 +10,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.23.2",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@reduxjs/toolkit": "^1.9.5",
-    "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
     "@types/jest": "^29.5.4",
     "@types/react": "~18.2.14",
+    "babel-preset-expo": "^9.5.2",
     "expo": "^49.0.3",
     "expo-checkbox": "~2.4.0",
     "expo-constants": "~14.4.2",
@@ -56,14 +57,5 @@
     "metro": "^0.73.7",
     "metro-resolver": "^0.73.7"
   },
-  "private": true,
-  "jest": {
-    "preset": "jest-expo",
-    "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
-    ],
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
-    ]
-  }
+  "private": true
 }

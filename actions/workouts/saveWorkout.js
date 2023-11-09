@@ -32,7 +32,14 @@ export const saveWorkout = (workout) => {
               created_at: timeStamp,
               sets: array,
             };
-            await setDoc(userSetsByExerciseRef, data);
+            try {
+              await setDoc(userSetsByExerciseRef, data);
+            } catch (error) {
+              console.error(
+                "Error during saving workout, adding sets to userExerciseSets: ",
+                error
+              );
+            }
           }
         }
       }

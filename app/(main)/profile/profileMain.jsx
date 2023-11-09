@@ -17,6 +17,9 @@ import { doc, onSnapshot } from "firebase/firestore";
 const ProfileMain = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
+  const pendingFriendRequests = Object.values(
+    user?.pendingFriendRequests || {}
+  );
 
   useEffect(() => {
     const userRef = doc(db, "users", auth.currentUser.uid);
@@ -63,7 +66,7 @@ const ProfileMain = () => {
       },
       textStyle: { fontSize: 20 },
       text: "Friends",
-      friendRequests: user?.pendingFriendRequests?.length || null,
+      friendRequests: pendingFriendRequests?.length || null,
     },
     {
       itemStyle: styles.actionItem,
@@ -74,6 +77,7 @@ const ProfileMain = () => {
   ];
 
   const ItemSeparator = () => <View style={styles.separator} />;
+
   return (
     <View style={styles.container}>
       <Avatar
@@ -82,6 +86,7 @@ const ProfileMain = () => {
         title={
           user?.displayName[0]?.toUpperCase() || user?.fullName[0].toUpperCase()
         }
+        source={0}
         containerStyle={{
           backgroundColor: "green",
           alignSelf: "center",

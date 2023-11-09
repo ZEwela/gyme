@@ -9,7 +9,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import WorkoutListItem from "../../../components/WorkoutListItem";
-import { getWorkoutsByUser } from "../../../actions/workouts/getWorkoutsByUser";
+
+import { getWorkoutsRealtime } from "../../../actions/workouts/getWorkoutsRealtime";
 import { setUserWorkouts } from "../../../store/slices/userWorkoutsSlice";
 import { Workout } from "../../../types";
 import AddButton from "../../../components/AddButton";
@@ -22,68 +23,71 @@ const Workouts: React.FC<WorkoutsProps> = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const workouts = await getWorkoutsByUser();
-
-        const workoutsWithDatesAsStrings = workouts.map((workout: Workout) => {
-          /*
-          Convert timestamps, coming from database, to strings before adding it to redux store 
-          to avoid a non-serializable value error 
-          */
-          if (workout.updated_at) {
-            if (
-              typeof workout.created_at === "string" &&
-              typeof workout.updated_at === "string"
-            ) {
-              return workout;
-            } else {
-              const created_at =
-                typeof workout.created_at === "string"
-                  ? workout.created_at
-                  : workout.created_at.toDate().toISOString();
-
-              const updated_at =
+    // Subscribe to real-time updates and provide a callback to handle changes.
+    const unsubscribe = getWorkoutsRealtime(
+      (updatedWorkouts) => {
+        const workoutsWithDatesAsStrings = updatedWorkouts.map(
+          (workout: Workout) => {
+            /*
+              Convert timestamps, coming from database, to strings before adding it to redux store 
+              to avoid a non-serializable value error 
+              */
+            if (workout?.updated_at) {
+              if (
+                typeof workout.created_at === "string" &&
                 typeof workout.updated_at === "string"
-                  ? workout.updated_at
-                  : workout.updated_at.toDate().toISOString();
+              ) {
+                return workout;
+              } else {
+                const created_at =
+                  typeof workout.created_at === "string"
+                    ? workout.created_at
+                    : workout.created_at?.toDate().toISOString();
 
-              return {
-                ...workout,
-                created_at,
-                updated_at,
-              };
-            }
-          } else {
-            if (typeof workout.created_at === "string") {
-              return workout;
+                const updated_at =
+                  typeof workout.updated_at === "string"
+                    ? workout.updated_at
+                    : workout.updated_at?.toDate().toISOString();
+
+                return {
+                  ...workout,
+                  created_at,
+                  updated_at,
+                };
+              }
             } else {
-              const created_at =
-                typeof workout.created_at === "string"
-                  ? workout.created_at
-                  : workout.created_at.toDate().toISOString();
+              if (typeof workout.created_at === "string") {
+                return workout;
+              } else {
+                const created_at =
+                  typeof workout.created_at === "string"
+                    ? workout.created_at
+                    : workout.created_at?.toDate().toISOString();
 
-              return {
-                ...workout,
-                created_at,
-              };
+                return {
+                  ...workout,
+                  created_at,
+                };
+              }
             }
           }
-        });
+        );
 
         setWorkouts(workoutsWithDatesAsStrings);
         dispatch(setUserWorkouts(workoutsWithDatesAsStrings));
 
         setLoading(false);
-      } catch (error) {
+      },
+      (error) => {
         alert(
           "Sorry something went wrong while trying to display list of workouts, please try again later"
         );
         setLoading(false);
       }
-    }
+    );
 
-    fetchData();
+    // Clean up the subscription when the component unmounts.
+    return () => unsubscribe();
   }, []);
 
   if (loading) {

@@ -10,13 +10,19 @@ export const memberWorkoutSave = (member, workout) => {
 
       const workoutId = newWorkoutRef._key.path.segments[1];
 
+      const workoutSets = workout.members_sets
+        ? workout.members_sets[member]
+          ? workout.members_sets[member]
+          : null
+        : null;
+
       const workoutData = {
         workout_id: workoutId,
         workout_name: workout.workout_name.toLowerCase(),
         exercises_list: workout.exercises_list,
         created_at: timeStamp,
         user_id: member,
-        sets: workout.members_sets[member] || null,
+        sets: workoutSets,
         note: workout.note || null,
       };
 

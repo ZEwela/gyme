@@ -1,13 +1,5 @@
 import { db } from "../../firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export async function getUserDetailsByEmail(email) {
   try {
@@ -24,6 +16,6 @@ export async function getUserDetailsByEmail(email) {
     });
     return users;
   } catch (error) {
-    console.error("Error fetching workouts:", error);
+    console.error("Error fetching users data:", error);
   }
 }

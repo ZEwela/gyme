@@ -5,24 +5,32 @@ export const removeFriend = async (friendToRemove) => {
   // Get the current user's data
   const currentUserRef = doc(db, "users", auth.currentUser.uid);
   const currentUserData = (await getDoc(currentUserRef)).data();
-
-  if (Array.isArray(currentUserData.friends)) {
-    // Find the index of the friend to remove
-    const findUser = (friend) => {
-      return friend._id === friendToRemove._id;
-    };
-    const friendIndex = currentUserData.friends.findIndex(findUser);
-
-    // Remove
-    if (friendIndex !== -1) {
-      currentUserData.friends.splice(friendIndex, 1);
+  // Remove from user friends array
+  if (currentUserData.friends[friendToRemove._id]) {
+    delete currentUserData.friends[friendToRemove._id];
+    try {
       await updateDoc(currentUserRef, { friends: currentUserData.friends });
-
-      console.log("Friend removed successfully!");
-    } else {
-      console.log("Friend not found in the list.");
+    } catch (error) {
+      console.error("Error during removing record from friends list: ", error);
     }
   } else {
-    console.log("Error: Friends field is not defined or not an array.");
+    console.log("Error: Friend not found in the list.");
+  }
+  // Get friend's data
+  const currentFriendRef = doc(db, "users", friendToRemove._id);
+  const currentFriendData = (await getDoc(currentFriendRef)).data();
+  // Remove from friend's friends array
+  if (currentFriendData.friends[auth.currentUser.uid]) {
+    delete currentFriendData.friends[auth.currentUser.uid];
+    try {
+      await updateDoc(currentFriendRef, { friends: currentFriendData.friends });
+    } catch (error) {
+      console.error(
+        "Error during removing record from friends list, friends data: ",
+        error
+      );
+    }
+  } else {
+    console.log("Error: Friend not found in the list.");
   }
 };

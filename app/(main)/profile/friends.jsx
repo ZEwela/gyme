@@ -16,7 +16,10 @@ import { sendFriendRequest } from "../../../actions/users/sendFriendRequest";
 
 const friends = () => {
   const user = useSelector(selectUser);
-  const friends = user?.friends || null;
+  const friends = user?.friends || {};
+  const friendsArray = Object.values(friends);
+  const sentFriendRequests = Object.values(user.sentFriendRequests || {});
+  const pendingFriendRequests = Object.values(user.pendingFriendRequests || {});
 
   const [searchedEmail, setSearchedEmail] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -30,21 +33,26 @@ const friends = () => {
   };
 
   const handleSearch = async () => {
-    if (searchedEmail.length <= 0) {
+    console.log(searchedEmail.length);
+    if (
+      searchedEmail.length === 0 ||
+      searchedEmail.trim() === user.providerData.email
+    ) {
       setIsSearchVisible(false);
+      setSearchedEmail("");
       return;
-    }
-
-    const results = await getUserDetailsByEmail(searchedEmail.trim());
-
-    if (results.length === 0) {
-      setIsNoResultsMessageVisible(true);
-
-      setTimeout(() => {
-        setIsNoResultsMessageVisible(false);
-      }, 5000);
     } else {
-      setSearchResults(...results);
+      const results = await getUserDetailsByEmail(searchedEmail.trim());
+
+      if (results.length === 0) {
+        setIsNoResultsMessageVisible(true);
+
+        setTimeout(() => {
+          setIsNoResultsMessageVisible(false);
+        }, 5000);
+      } else {
+        setSearchResults(...results);
+      }
     }
 
     setSearchedEmail("");
@@ -108,22 +116,22 @@ const friends = () => {
         />
       )}
 
-      {user?.sentFriendRequests?.length > 0 && (
-        <SentFriendRequests requests={user.sentFriendRequests} />
+      {sentFriendRequests?.length > 0 && (
+        <SentFriendRequests requests={sentFriendRequests} />
       )}
 
-      {user?.pendingFriendRequests?.length > 0 && (
-        <PendingFriendRequests requests={user.pendingFriendRequests} />
+      {pendingFriendRequests?.length > 0 && (
+        <PendingFriendRequests requests={pendingFriendRequests} />
       )}
 
-      {friends?.length > 0 && (
+      {friendsArray?.length > 0 && (
         <>
           <View>
             <Text style={styles.textTitle}>Friends: </Text>
           </View>
           <View>
             <FlatList
-              data={friends}
+              data={friendsArray}
               renderItem={({ item }) => <FriendListItem friend={item} />}
               keyExtractor={(item) => item?._id}
             />

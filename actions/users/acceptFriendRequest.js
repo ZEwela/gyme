@@ -11,33 +11,52 @@ export const acceptFriendRequest = async (requestInfo) => {
     email: requestInfo.sender_email,
   };
 
-  const currentRequests = currentUserData.friends || [];
-  currentRequests.push(friend);
+  const currentRequests = currentUserData.friends || {};
+  currentRequests[requestInfo.sender_id] = friend;
 
-  updateDoc(currentUserRef, {
-    friends: currentRequests,
-  });
+  // add friend
+  try {
+    await updateDoc(currentUserRef, {
+      friends: currentRequests,
+    });
+  } catch (error) {
+    console.error(
+      "Error from friend request accepting proccess, adding friend: ",
+      error
+    );
+  }
 
   // Delete accepted request from user's pending friend requests
-  const filteredPendingFriendRequests =
-    currentUserData.pendingFriendRequests.filter(
-      ({ request_id }) => request_id !== requestInfo.request_id
+  const pendingFriendRequestsToDeleteFrom =
+    currentUserData.pendingFriendRequests;
+  delete currentUserData.pendingFriendRequests[requestInfo.sender_id];
+
+  try {
+    await updateDoc(currentUserRef, {
+      pendingFriendRequests: pendingFriendRequestsToDeleteFrom,
+    });
+  } catch (error) {
+    console.error(
+      "Error from friend request accepting proccess, removing pending request from user's data: ",
+      error
     );
-  // Update the document with the new array
-  updateDoc(currentUserRef, {
-    pendingFriendRequests: filteredPendingFriendRequests,
-  });
+  }
 
   // Delete accepted request from sender's sent friend requests
   const senderUserRef = doc(db, "users", requestInfo.sender_id);
   const senderUserData = (await getDoc(senderUserRef)).data();
-  const filteredSentFriendRequests = senderUserData.sentFriendRequests.filter(
-    ({ request_id }) => request_id !== requestInfo.request_id
-  );
-  // Update the document with the new array
-  updateDoc(senderUserRef, {
-    sentFriendRequests: filteredSentFriendRequests,
-  });
+  const sentFriendRequestsToDeleteFrom = senderUserData.sentFriendRequests;
+  delete sentFriendRequestsToDeleteFrom[auth.currentUser.uid];
+  try {
+    await updateDoc(senderUserRef, {
+      sentFriendRequests: sentFriendRequestsToDeleteFrom,
+    });
+  } catch (error) {
+    console.error(
+      "Error from friend request accepting proccess, removing sent request from friend's data: ",
+      error
+    );
+  }
 
   // Add friend in sender's friends array
   const senderFriend = {
@@ -46,17 +65,29 @@ export const acceptFriendRequest = async (requestInfo) => {
     email: currentUserData.providerData.email,
   };
 
-  // Retrieve the current array, push the new item, and then update the field
-  const senderRequests = senderUserData.friends || [];
-  senderRequests.push(senderFriend);
+  let senderRequests = senderUserData.friends || {};
+  senderRequests[currentUserData._id] = senderFriend;
 
-  // Update the document with the new array
-  updateDoc(senderUserRef, {
-    friends: senderRequests,
-  });
+  try {
+    await updateDoc(senderUserRef, {
+      friends: senderRequests,
+    });
+  } catch (error) {
+    console.error(
+      "Error from friend request accepting proccess, adding friend to sender's data: ",
+      error
+    );
+  }
 
   //   Delete friend request from friendRequests
-  await deleteDoc(
-    doc(db, "friendRequests", requestInfo.sender_id + currentUserData._id)
-  );
+  try {
+    await deleteDoc(
+      doc(db, "friendRequests", requestInfo.sender_id + currentUserData._id)
+    );
+  } catch (error) {
+    console.error(
+      "Error from friend request accepting proccess, delete request from friendRequests: ",
+      error
+    );
+  }
 };

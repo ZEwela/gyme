@@ -4,7 +4,9 @@ import Action from "./Action";
 import { acceptFriendRequest } from "../../actions/users/acceptFriendRequest";
 
 const PendingFriendRequests = ({ requests }) => {
+  console.log("requests from PendingFriendRequests",requests);
   const handleAcceptInvite = async (requestInfo) => {
+    console.log("requestInfo from PendingFriendRequests",requestInfo)
     try {
       await acceptFriendRequest(requestInfo);
     } catch (error) {

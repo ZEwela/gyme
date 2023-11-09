@@ -33,8 +33,8 @@ export const sendFriendRequest = async (newFriend) => {
   getDoc(recipientUserRef).then((docSnapshot) => {
     if (docSnapshot.exists()) {
       const currentData = docSnapshot.data();
-      const currentRequests = currentData.pendingFriendRequests || [];
-      currentRequests.push(request);
+      const currentRequests = currentData.pendingFriendRequests || {};
+      currentRequests[auth.currentUser.uid] = request;
 
       // Update the document with the new array
       updateDoc(recipientUserRef, {
@@ -57,8 +57,8 @@ export const sendFriendRequest = async (newFriend) => {
   getDoc(senderUserRef).then((docSnapshot) => {
     if (docSnapshot.exists()) {
       const currentData = docSnapshot.data();
-      const currentRequests = currentData.sentFriendRequests || [];
-      currentRequests.push(requestSent);
+      const currentRequests = currentData.sentFriendRequests || {};
+      currentRequests[newFriend._id] = requestSent;
 
       // Update the document with the new array
       updateDoc(senderUserRef, {

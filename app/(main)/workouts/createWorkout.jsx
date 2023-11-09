@@ -58,7 +58,7 @@ const createWorkout = () => {
 
   const handleGoBack = () => {
     if (!workoutName.length && !checkedExercises.length) {
-      router.back();
+      router.replace("/(main)/workouts/workoutsMain");
     } else {
       Alert.alert(
         // title
@@ -70,7 +70,7 @@ const createWorkout = () => {
             text: "Continue, without saving",
             onPress: () => {
               setCheckedExercises([]);
-              router.back();
+              router.replace("/(main)/workouts/workoutsMain");
             },
           },
           {

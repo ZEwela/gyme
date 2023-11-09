@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import AddOthersToWorkout from "./addOthersToWorkout";
 import Item from "../../../components/Item";
-import AddWorkoutNote from "../../../components/AddWorkoutNote";
+import AddWorkoutNote from "../../../components/workout/AddWorkoutNote";
 import {
   setUserWorkoutById,
   selectWorkout,
@@ -23,7 +23,8 @@ import { saveWorkout as save } from "../../../actions/workouts/saveWorkout";
 import { memberWorkoutSave } from "../../../actions/workouts/memberWorkoutSave";
 import { deleteWorkout as deleteWorkoutInDB } from "../../../actions/workouts/deleteWorkout";
 import { updateWorkout as updateWorkoutInDB } from "../../../actions/workouts/updateWorkout";
-import Drawer from "../../../components/Drawer";
+import Drawer from "../../../components/workout/Drawer";
+import { useCheckedExercises } from "../../../contexts/CheckedExercisesContext";
 
 const Workout = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,8 @@ const Workout = () => {
   const [showAddOthers, setShowAddOthers] = useState<boolean>(false);
   const [showAddNote, setShowAddNote] = useState<boolean>(false);
   const [showDrawer, setShowDrower] = useState<boolean>(false);
+
+  const { checkedExercises, setCheckedExercises } = useCheckedExercises();
 
   useEffect(() => {
     if (workout && workoutId === workout.workout_id) {
@@ -49,12 +52,16 @@ const Workout = () => {
       const workoutSaved = await save(workout);
       if (workout.workout_members && workout.workout_members.length > 0) {
         workout.workout_members.forEach(async (member) => {
-          const memberWorkoutSaved = await memberWorkoutSave(member, workout);
+          try {
+            const memberWorkoutSaved = await memberWorkoutSave(member, workout);
+          } catch (error) {
+            console.error("Error while trying to save member workouts", error);
+          }
         });
       }
       alert(workoutSaved);
       dispatch(resetUserWorkout());
-      router.replace("/(main)/workouts/workoutsMain");
+      router.push("/(main)/workouts/workoutsMain");
     } catch (error) {
       alert(
         "Sorry, something went wrong while saving your workout. Please try again later."
@@ -65,6 +72,7 @@ const Workout = () => {
   const deleteWorkout = async () => {
     try {
       const workoutDeleted = await deleteWorkoutInDB(workout.workout_id);
+      setCheckedExercises([]);
       alert(workoutDeleted);
       dispatch(resetUserWorkout());
       router.replace("/(main)/workouts/workoutsMain");
@@ -94,7 +102,9 @@ const Workout = () => {
     } else {
       Alert.alert(
         null,
-        "Are you saving your changes or adding a new workout?",
+        workout.workout_members
+          ? "Save it as a new workout"
+          : "Are you saving your changes or adding a new workout?",
         [
           {
             text: "Cancel",
@@ -102,7 +112,9 @@ const Workout = () => {
               return;
             },
           },
-          { text: "Save changes", onPress: () => updateWorkout() },
+          workout.workout_members
+            ? null
+            : { text: "Save changes", onPress: () => updateWorkout() },
           { text: "Save as a new workout", onPress: () => saveWorkout() },
         ]
       );
@@ -129,17 +141,29 @@ const Workout = () => {
       // title
       null,
       // body
-      "Warning: Your changes will not be saved. Would you like to continue anyway?",
+      `${
+        workout.workout_members
+          ? "Remember to save workouts"
+          : "Warning: Your changes will not be saved. Would you like to continue anyway?"
+      }`,
       [
         {
-          text: "Continue, without saving",
+          text: `${
+            workout.workout_members
+              ? "Leave without saving"
+              : "Leave, there are no changes"
+          }`,
           onPress: () => {
             dispatch(resetUserWorkout());
-            router.back();
+            router.replace("/(main)/workouts/workoutsMain");
           },
         },
         {
-          text: "No",
+          text: `${
+            workout.workout_members
+              ? "I want to save workouts"
+              : "I need to save changes"
+          }`,
           onPress: () => {
             return;
           },

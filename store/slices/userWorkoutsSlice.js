@@ -82,7 +82,6 @@ const userWorkoutsSlice = createSlice({
     },
     addMembersSetsByExerciseId(state, action) {
       const { memberId, sets, updatedSets, exerciseId } = action.payload;
-      console.log("from workoutsSlice", action.payload);
       state.userWorkout = {
         ...state.userWorkout,
         members_sets: { ...(state.userWorkout.members_sets || {}) },

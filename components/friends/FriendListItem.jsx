@@ -21,7 +21,7 @@ const FriendListItem = ({ friend }) => {
         {
           text: "Yes, remove",
           onPress: () => {
-            dispatch(removeUserFriend(friend.email));
+            dispatch(removeUserFriend(friend._id));
             removeFriend(friend);
           },
         },

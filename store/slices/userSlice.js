@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const userSlice = createSlice({
   name: "user",
@@ -28,14 +29,13 @@ const userSlice = createSlice({
     addUserFriend(state, action) {
       state.user = {
         ...state.user,
-        friends: [action.payload, ...(state.user.friends || [])],
+        friends: [action.payload, ...(state.user.friends || {})],
       };
     },
     removeUserFriend(state, action) {
-      const filteredFriends = state.user.friends.filter(({ email }) => {
-        email !== action.payload;
-      });
-      state.user.friends = filteredFriends;
+      const friendsToDeleteFrom = state.user.friends;
+      delete state.user.friends[action.payload];
+      state.user.friends = friendsToDeleteFrom;
     },
     removePendingFriendRequest(state, action) {
       const filteredPendingFriendRequest =
@@ -48,6 +48,13 @@ const userSlice = createSlice({
 });
 
 export const selectUser = (state) => state.user.user;
+export const selectFriends = (state) => state.user.user.friends;
+export const selectFriendNameByFriendId = createSelector(
+  [selectFriends],
+  (friends) => (friendId) => {
+    return friends ? friends[friendId] : null;
+  }
+);
 export const {
   setUser,
   resetUser,

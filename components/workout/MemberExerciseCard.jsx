@@ -5,16 +5,17 @@ import SetItem from "./SetItem";
 import AddSet from "./AddSet";
 import {
   addMembersSetsByExerciseId,
-  selectMemberSetsByMemberId,
   selectMembersSets,
-  selectWorkout,
-  setUserWorkoutSetsByExerciseId,
-} from "../store/slices/userWorkoutsSlice";
-import { getUserSetsByExerciseId } from "../actions/exercises/getUserSetsByExerciseId";
+} from "../../store/slices/userWorkoutsSlice";
+import { getUserSetsByExerciseId } from "../../actions/exercises/getUserSetsByExerciseId";
+import { selectFriendNameByFriendId } from "../../store/slices/userSlice";
 
 const MemberExerciseCard = ({ memberId, exerciseId }) => {
   const dispatch = useDispatch();
   const membersSetsFromStore = useSelector(selectMembersSets);
+  const memberName = useSelector((state) =>
+    selectFriendNameByFriendId(state)(memberId)
+  );
 
   const [sets, setSets] = useState(
     membersSetsFromStore &&
@@ -72,7 +73,7 @@ const MemberExerciseCard = ({ memberId, exerciseId }) => {
 
   return (
     <View style={styles.item}>
-      <Text style={styles.text}>{memberId}</Text>
+      <Text style={styles.text}>{memberName.displayName}</Text>
 
       <FlatList
         data={sets}

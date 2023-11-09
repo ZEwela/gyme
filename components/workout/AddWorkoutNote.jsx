@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectWorkout,
   setUserWorkoutNote,
-} from "../store/slices/userWorkoutsSlice";
+} from "../../store/slices/userWorkoutsSlice";
 
 const AddWorkoutNote = ({ show, setShow, setShowDrawer }) => {
   const dispatch = useDispatch();
